@@ -68,7 +68,6 @@ function AreaOfIntrest() {
     return interest ? interest.id : null;
   }
 
-
   useEffect(() => {
     const audio = new Audio(apiData.audio);
 
@@ -92,7 +91,7 @@ function AreaOfIntrest() {
       resetTranscript();
     };
   }, []);
-  
+
   // console.log("getInterestIdByName(transcript)", getInterestIdByName("movie"))
   useEffect(() => {
     const interestId = getInterestIdByName(transcript);
@@ -108,7 +107,10 @@ function AreaOfIntrest() {
 
   return (
     <div>
-      <OptionHeader className="optionHeader" style={{ fontSize: '24px !important '}}>
+      <OptionHeader
+        className="optionHeader"
+        style={{ fontSize: "24px !important " }}
+      >
         {(FlowHeaders as any)[selectedLanguage]?.intrest}
       </OptionHeader>
       <div
@@ -119,7 +121,7 @@ function AreaOfIntrest() {
           cursor: "pointer",
           overflow: "scroll",
           // alignContent: "space-between",
-marginTop:"15px",
+          marginTop: "15px",
           justifyContent: "center",
           maxHeight: "60vh",
         }}
@@ -131,9 +133,11 @@ marginTop:"15px",
               key={val.id}
               id={val.id}
               onClick={() => handleIntrestChange(val.id)}
-              style={{ margin:"5px !important", padding: "5px !important"}}
+              style={{ margin: "5px !important", padding: "5px !important" }}
               className={
-                selectedOptions.includes(val.id) ? "selectedIntrest" : "otherIntrest"
+                selectedOptions.includes(val.id)
+                  ? "selectedIntrest"
+                  : "otherIntrest"
               }
             >
               {val.name}
@@ -142,15 +146,18 @@ marginTop:"15px",
       </div>
 
       {!listening && (
-        <ContainerMic className={"ContainerVoice"} style={{ backgroundColor: "white !important" ,}}>
+        <ContainerMic
+          className={"ContainerVoice"}
+          style={{ backgroundColor: "white !important" }}
+        >
           <div
             style={{
               margin: "auto",
               textAlign: "center",
               padding: "15px",
-             
+
               display: "flex",
-              flexDirection: "column",    
+              flexDirection: "column",
             }}
           >
             <img
@@ -174,7 +181,7 @@ marginTop:"15px",
               disabled={selectedOptions.length < 3 ? true : false}
               startIcon={<CheckCircleSharp />}
               style={{
-                fontFamily: 'IBM Plex Sans Devanagari',
+                fontFamily: "IBM Plex Sans Devanagari",
                 width: "104%",
                 borderRadius: "8px",
                 backgroundColor: "#91278F",

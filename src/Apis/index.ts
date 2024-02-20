@@ -28,14 +28,6 @@ export const registerFlow = async (apiBody: any, nextContext: any) => {
       },
     })
     .then((response) => {
-      // if (response.data && response.data.flowComplete) {
-      //   // setNextContext(response.data);
-      //   setTimeout(() => {
-      //     setLoading(false);
-      //     setNextContext(response.data);
-      //   }, 1500);
-      // }
-
       if (response.data && response.data.next_context.length > 0) {
         // setNextContext(response.data);
         setTimeout(() => {
@@ -50,6 +42,25 @@ export const registerFlow = async (apiBody: any, nextContext: any) => {
       console.error("Error:", error);
       return error;
     });
+};
+
+export const locationApi = async (lng: number, lat: number) => {
+  console.log(lng, lat);
+  // const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+  // try {
+  //   const response = await axios.get(apiUrl);
+  //   const data = response.data;
+
+  //   if (data) {
+  //     var address = data.display_name;
+  //     console.log("Address:", address);
+  //   } else {
+  //     console.error("Error: No data received");
+  //   }
+  // } catch (error: any) {
+  //   console.error("Error:", error.message);
+  // }
 };
 
 window.addEventListener("beforeunload", () => {
