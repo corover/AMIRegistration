@@ -6,7 +6,7 @@ import {
   VoiceRecognitionSpan,
 } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Button, Input } from "@mui/material";
 import { FlowHeaders, Listening } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
@@ -20,6 +20,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs, { Dayjs } from "dayjs";
 import moment from "moment";
 import {
+  filterValue,
   formatDateToYYYYMMDD,
   isResponse,
   playAudioURL,
@@ -29,6 +30,7 @@ import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 import { getFrequentVoice } from "../../utils/data";
+import { setDOB } from "../../store/Redux-Dispatcher/UserDispatcher";
 function DateOfBirth() {
   const { selectedLanguage } = useSelector(reducer);
   const { mobileNoData } = useSelector(userProfileState);
@@ -41,10 +43,12 @@ function DateOfBirth() {
   const [inputValue, setInputValue] = useState("");
   const [transcriptState, setTranscriptState] = useState("");
 
-  const apiData = useSelector(apiSelector).apiData;
+  const { enableLocation, apiData } = useSelector(apiSelector);
+  const flowComplete = useSelector(userProfileState);
 
   const [date, setDate] = useState("");
 
+ 
   const {
     transcript,
     startRecognition,
@@ -71,9 +75,13 @@ function DateOfBirth() {
   };
 
   const handleSubmit = async () => {
+   
     stopRecognition();
-    moment(inputValue).format("YYYYMMDD") !== "Invalid date" &&
-      registerFlow(moment(inputValue).format("YYYYMMDD"), nextContext);
+    if (moment(inputValue).format("YYYYMMDD") !== "Invalid date") {
+      !enableLocation
+        ? registerFlow(moment(inputValue).format("YYYY-MM-DD"), nextContext)
+        : registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+    }
   };
 
   const handleNo = () => {
@@ -166,11 +174,13 @@ function DateOfBirth() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript);
+      setTranscriptState(filterValue(transcript));
       //  setInputValue(transcript);
-      const a = formatDateToYYYYMMDD(transcript);
-      a && setInputValue(a);
+      const data = formatDateToYYYYMMDD(transcript);
+      data && setInputValue(filterValue(data));
+      transcript.length > 0 && setDOB( moment(data).format("YYY-MM-DD"));
     }
+
 
     let response = isResponse(transcript, selectedLanguage);
 
@@ -263,7 +273,9 @@ function DateOfBirth() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(FlowHeaders as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
@@ -298,7 +310,7 @@ function DateOfBirth() {
                 </span>
 
                 {moment(inputValue).format("YYYYMMDD") === "Invalid date" && (
-                  <p style={{ color: "#F15A59", fontSize: "12px" }}>
+                  <p style={{ color: "#F15A59", fontSize: "15px" }}>
                     {(FlowHeaders as any)[selectedLanguage]?.errDate}
                   </p>
                 )}
@@ -320,7 +332,7 @@ function DateOfBirth() {
                       variant="contained"
                       startIcon={<CheckCircleSharp />}
                       style={{
-                        fontFamily: 'IBM Plex Sans Devanagari',
+                        fontFamily: "IBM Plex Sans Devanagari",
                         width: "100%",
                         borderRadius: "8px",
                         marginBottom: "10px",
@@ -336,7 +348,7 @@ function DateOfBirth() {
                     variant="outlined"
                     startIcon={<Cancel />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: "IBM Plex Sans Devanagari",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -384,7 +396,7 @@ function DateOfBirth() {
                 variant="contained"
                 startIcon={<CheckCircleSharp />}
                 style={{
-                  fontFamily: 'IBM Plex Sans Devanagari',
+                  fontFamily: "IBM Plex Sans Devanagari",
                   borderRadius: "8px",
                   backgroundColor: "#91278F",
                   width: "fitContent",
@@ -392,7 +404,21 @@ function DateOfBirth() {
                   margin: "auto",
                   marginBottom: "10px",
                 }}
-                onClick={() => registerFlow(date, nextContext)}
+                onClick={() => {
+                  setDOB( moment(inputValue).format("YYYY-MM-DD"));
+
+                  setTimeout(() => {
+                    !enableLocation
+                      ? registerFlow(
+                          moment(inputValue).format("YYYY-MM-DD"),
+                          nextContext
+                        )
+                      : registerFlow(
+                          flowComplete,
+                          "4b7c27be-5f61-437e-a271-ad72c9a20d5a"
+                        );
+                  }, 1000);
+                }}
               >
                 {(FlowHeaders as any)[selectedLanguage]?.submit}
               </Button>

@@ -16,25 +16,27 @@ import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
+import { isResponse, playAudioURL, filterValue } from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
+
 function OTPValidation() {
-  const { selectedLanguage } = useSelector(reducer);
-  const { mobileNoData } = useSelector(userProfileState);
   const [askValue, setAskValue] = useState(true);
   const [checkValue, setCheckValue] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
   const [renderMic, setRenderMic] = useState(false);
   const [dots, setDots] = useState(3);
   const [transcriptState, setTranscriptState] = useState("");
-  const { nextContext, apiData } = useSelector(apiSelector);
   const [inputValue, setInputValue] = useState("");
   const [errorMessage, setErrorState] = useState("");
   const [error, setError] = useState(true);
   const [optWorng, setOtpWorng] = useState(false);
+
+  const { nextContext, apiData, location } = useSelector(apiSelector);
+  const { selectedLanguage } = useSelector(reducer);
+  const { mobileNoData } = useSelector(userProfileState);
 
   const {
     transcript,
@@ -47,8 +49,8 @@ function OTPValidation() {
   } = useSpeechRecognitionHook();
 
   const handleInputChange = (event: any) => {
-    setTranscriptState(event.target.value);
-    setInputValue(event.target.value);
+    setTranscriptState(filterValue(event.target.value));
+    setInputValue(filterValue(event.target.value));
   };
 
   const handleClick = () => {
@@ -74,14 +76,18 @@ function OTPValidation() {
       {
         mobile: mobileNoData,
         otp: inputValue.replace(/\s/g, ""),
+        lat: location.lat,
+        lng: location.lng,
       },
       nextContext
     );
+
+    // locationApi(location.lat, location.lng, mobileNoData);
   };
 
   const optWrong = () => {
     return (
-      <p style={{ color: "red", fontSize: "12px" }}>
+      <p style={{ color: "red", fontSize: "15px" }}>
         {(FlowHeaders as any)[selectedLanguage]?.optWrong}
       </p>
     );
@@ -118,6 +124,8 @@ function OTPValidation() {
   }, [transcriptState]);
 
   useEffect(() => {
+    // locationApi(location.lat, location.lng, mobileNoData);
+
     playAudioURL(
       [apiData && apiData.audio],
       isSpeechRecognitionSupported,
@@ -170,8 +178,8 @@ function OTPValidation() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript.replace(/\s/g, ""));
-      setInputValue(transcript.replace(/\s/g, ""));
+      setTranscriptState(filterValue(transcript.replace(/\s/g, "")));
+      setInputValue(filterValue(transcript.replace(/\s/g, "")));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -291,7 +299,9 @@ function OTPValidation() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(FlowHeaders as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
@@ -313,7 +323,7 @@ function OTPValidation() {
                 }}
               >
                 {!error ? (
-                  <p style={{ color: "red", fontSize: "12px" }}>
+                  <p style={{ color: "red", fontSize: "15px" }}>
                     {errorMessage}
                   </p>
                 ) : (
@@ -346,7 +356,7 @@ function OTPValidation() {
                   disabled={optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -361,7 +371,7 @@ function OTPValidation() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -404,7 +414,7 @@ function OTPValidation() {
                     outline: "none",
                     letterSpacing: "14px",
                     textAlign: "center",
-                    border: "1px solid gray",
+                    border: "1px solid white",
                   }}
                 />
 
@@ -415,7 +425,7 @@ function OTPValidation() {
                   disabled={optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

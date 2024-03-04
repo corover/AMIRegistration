@@ -25,7 +25,7 @@ import { userProfileState } from "../../store/Redux-selector/Selector";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { setDistrict } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
+import { filterValue, isResponse, playAudioURL } from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
@@ -35,6 +35,7 @@ const btnStyle = {
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
+  border: "3px solid #F0D9F0"
 };
 
 function District() {
@@ -51,8 +52,6 @@ function District() {
   const [invalid, SetInvalid] = useState(false);
   const [check, setCheck] = useState(true);
   const [transcriptState, setTranscriptState] = useState("");
-
-  
 
   const stateID = useSelector(userProfileState).stateData;
 
@@ -121,8 +120,6 @@ function District() {
         setCheckValue(false);
       }
     }, 2200);
-
-    
 
     if (
       transcript.length > 0 &&
@@ -195,8 +192,8 @@ function District() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript);
-      setInputValue(transcript);
+      setTranscriptState(filterValue(transcript));
+      setInputValue(filterValue(transcript));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -328,7 +325,9 @@ function District() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(FlowHeaders as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
@@ -382,7 +381,7 @@ function District() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: "IBM Plex Sans Devanagari",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -398,7 +397,7 @@ function District() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",

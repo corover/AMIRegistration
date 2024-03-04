@@ -1,28 +1,24 @@
 import Chatbot from "./ChatBot/Body/ChatBot";
-import { Provider } from "react-redux";
-import store from "./store/Redux/Redux-Store";
-import React, { useState, useEffect } from "react";
-import { locationApi } from "./Apis";
+import React, { useEffect, useState } from "react";
+import {
+  setLocation,
+  setEnableLocation,
+} from "./store/Redux-Dispatcher/ApiDispatcher";
+import {  } from "./Apis";
+import { useSelector } from "react-redux";
+import { apiSelector } from "./store/Redux-selector/Selector";
 
 function App() {
-  const [location, setLocation] = useState<Location | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  interface Location {
-    latitude: number;
-    longitude: number;
-  }
-
+  const { location, enableLocation } = useSelector(apiSelector);
   useEffect(() => {
     const fetchLocation = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          // setLocation({ latitude, longitude });
-          locationApi(latitude, longitude)
+          setLocation({ lat: latitude, lng: longitude });
         },
         (err) => {
-          setError(`Error retrieving location: ${err.message}`);
+          console.error(`Error retrieving location: ${err.message}`);
         }
       );
     };
@@ -30,27 +26,34 @@ function App() {
     if (navigator.geolocation) {
       navigator.permissions.query({ name: "geolocation" }).then((result) => {
         if (result.state === "granted") {
+          setEnableLocation(true);
+          // console.log("Permission granted");
           fetchLocation();
         } else if (result.state === "prompt") {
           navigator.geolocation.getCurrentPosition(
             () => {
+              console.log("Permission granted");
               fetchLocation();
             },
             (err) => {
-              setError(`Error retrieving location: ${err.message}`);
+              console.error(`Error retrieving location: ${err.message}`);
+              // console.log("Permission denied");
+              setEnableLocation(false);
             }
           );
         } else if (result.state === "denied") {
-          setError("Geolocation permission denied");
+          // console.log("Permission denied");
+          setEnableLocation(false);
+          console.error("Geolocation permission denied");
         }
       });
     } else {
-      setError("Geolocation is not supported by your browser");
+      console.error("Geolocation is not supported by your browser");
     }
   }, []);
+  
+  
 
-
-// console.log("lo", location)
   return (
     <div
       style={{
@@ -60,9 +63,7 @@ function App() {
         height: "100%",
       }}
     >
-      <Provider store={store}>
         <Chatbot />
-      </Provider>
     </div>
   );
 }

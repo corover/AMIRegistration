@@ -16,7 +16,7 @@ import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
+import { filterValue, isResponse, playAudioURL } from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
@@ -48,8 +48,8 @@ function MobileNumber() {
   } = useSpeechRecognitionHook();
 
   const handleInputChange = (event: any) => {
-    setTranscriptState(event.target.value);
-    setInputValue(event.target.value);
+    setTranscriptState(filterValue(event.target.value));
+    setInputValue(filterValue(event.target.value));
   };
 
   const handleClick = () => {
@@ -156,8 +156,8 @@ function MobileNumber() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript.replace(/\s/g, ""));
-      setInputValue(transcript.replace(/\s/g, ""));
+      setTranscriptState(filterValue(transcript.replace(/\s/g, "")));
+      setInputValue(filterValue(transcript.replace(/\s/g, "")));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -170,10 +170,8 @@ function MobileNumber() {
     if (response === "negative") {
       handleCloseMic();
       handleNo();
-     
     }
     // console.log("transcript", transcript)
-
   }, [transcript]);
 
   useEffect(() => {
@@ -188,7 +186,6 @@ function MobileNumber() {
       );
     }
   }, [inputValue, error]);
-
 
   return (
     <div>
@@ -268,7 +265,9 @@ function MobileNumber() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(FlowHeaders as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {(FlowHeaders as any)[selectedLanguage]?.mobile}
@@ -289,7 +288,7 @@ function MobileNumber() {
                 }}
               >
                 {!error ? (
-                  <p style={{ color: "red", fontSize: "12px" }}>
+                  <p style={{ color: "red", fontSize: "15px" }}>
                     {errorMessage}
                   </p>
                 ) : (
@@ -321,7 +320,7 @@ function MobileNumber() {
                   disabled={!error}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -336,7 +335,7 @@ function MobileNumber() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -379,7 +378,7 @@ function MobileNumber() {
                     outline: "none",
                     letterSpacing: "14px",
                     textAlign: "center",
-                    border: "1px solid gray",
+                    border: "1px solid white",
                   }}
                 />
 
@@ -388,7 +387,7 @@ function MobileNumber() {
                   disabled={!error}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

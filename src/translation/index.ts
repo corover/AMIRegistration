@@ -59,6 +59,8 @@ export const FlowHeaders = {
     profileExistMssg: "Page will be redirected to the application",
     complete: " You have been registered successfully",
     optWrong: "The OTP entered is incorrect",
+    enter: "Enter",
+    skip: "Skip",
   },
   hi: {
     name: "तुम्हारा नाम क्या है ?",
@@ -84,6 +86,8 @@ export const FlowHeaders = {
     profileExistMssg: "पेज को एप्लिकेशन पर पुनः निर्देशित किया जाएगा",
     complete: "आप सफलतापूर्वक रजिस्ट्र हो गए है",
     optWrong: "दर्ज किया गया OTP गलत है",
+    enter: "दर्ज करें",
+    skip: "छोड़ें",
   },
 };
 

@@ -11,7 +11,7 @@ import { reducer } from "../store/Redux-selector/Selector";
 import { flowReducer } from "../store/Redux-selector/Selector";
 
 function useSpeechRecognitionHook() {
-  const { stateView, districtView, cityView, areaOfIntrest } =
+  const { stateView, districtView, cityView, areaOfIntrest, genderView } =
     useSelector(flowReducer);
   const { selectedLanguage, checkMic } = useSelector(reducer);
   let selectedLanguage_ = selectedLanguage;
@@ -21,7 +21,7 @@ function useSpeechRecognitionHook() {
     registerFlow(blob, nextContext);
   });
 
-  if (stateView || districtView || cityView || areaOfIntrest) {
+  if (stateView || districtView || cityView || areaOfIntrest ) {
     selectedLanguage_ = selectedLanguage;
   } else {
     selectedLanguage_ = "en";

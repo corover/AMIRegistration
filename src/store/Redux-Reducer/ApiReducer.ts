@@ -5,6 +5,8 @@ import {
   PROFILE_HASPROFILE,
   PROFILE_ISBLOCKED,
   PROFILE_ISNEW_USER,
+  LOCATION,
+  ENABLE_LOCATION
 } from "../Redux-actions/ApiActions";
 
 const initialState = {
@@ -14,6 +16,8 @@ const initialState = {
   isBlocked: false,
   hasProfile: false,
   isNewUser: false,
+  location: {},
+  enableLocation: false,
 };
 
 const apiReducer = (state = initialState, action: any) => {
@@ -54,6 +58,18 @@ const apiReducer = (state = initialState, action: any) => {
         isNewUser: action.payload,
       };
 
+    case LOCATION:
+      return {
+        ...state,
+        location: action.payload,
+      };
+
+
+      case ENABLE_LOCATION:
+        return {
+          ...state,
+          enableLocation: action.payload,
+        };
     default:
       return state;
   }

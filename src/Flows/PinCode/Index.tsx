@@ -37,10 +37,10 @@ function PinCode() {
   const [errorMessage, setErrorState] = useState("");
   const [error, setError] = useState(true);
   const [optWorng, setOtpWorng] = useState(false);
+  const [continuePinCode, setContinuePinCode] = useState(false);
 
   const flowComplete = useSelector(userProfileState);
 
-  console.log("flowComplete", flowComplete);
   const {
     transcript,
     startRecognition,
@@ -53,7 +53,7 @@ function PinCode() {
 
   const handleInputChange = (event: any) => {
     setPinCode(event.target.value);
-    console.log("event.target.value", event.target.value);
+
     setTranscriptState(event.target.value);
     setInputValue(event.target.value);
   };
@@ -79,9 +79,15 @@ function PinCode() {
     await registerFlow(flowComplete, nextContext);
   };
 
+  const skipPinCode = async () => {
+    setTimeout(async () => {
+      await registerFlow(flowComplete, nextContext);
+    }, 1000);
+  };
+
   const optWrong = () => {
     return (
-      <p style={{ color: "red", fontSize: "12px" }}>
+      <p style={{ color: "red", fontSize: "15px" }}>
         {(FlowHeaders as any)[selectedLanguage]?.optWrong}
       </p>
     );
@@ -175,8 +181,7 @@ function PinCode() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setPinCode(transcript.replace(/\s/g, ""));
-
+      transcript.length > 0 && setPinCode(transcript.replace(/\s/g, ""));
       setTranscriptState(transcript.replace(/\s/g, ""));
       setInputValue(transcript.replace(/\s/g, ""));
     }
@@ -232,38 +237,81 @@ function PinCode() {
             </div>
           </div>
 
-          <div
-            style={{
-              height: "50%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-              width: "100%",
-            }}
-          >
-            <VoiceRecognitionContainer className={"VoiceRecognitionContainer"}>
-              <img
-                src="Mic.svg"
-                alt="mic"
-                style={{ zIndex: 999 }}
-                onClick={() =>
-                  isSpeechRecognitionSupported()
-                    ? startRecognition()
-                    : requestPermission()
-                }
-              />
-            </VoiceRecognitionContainer>
-            {renderMic && (
-              <Mic
-                handleCloseMic={handleCloseMic}
-                inputValue={inputValue}
-                transcript={transcript.replace(/\s/g, "")}
-                dots={dots}
-              />
-            )}
-          </div>
+          {continuePinCode ? (
+            <div
+              style={{
+                height: "50%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "relative",
+                width: "100%",
+              }}
+            >
+              <VoiceRecognitionContainer
+                className={"VoiceRecognitionContainer"}
+              >
+                <img
+                  src="Mic.svg"
+                  alt="mic"
+                  style={{ zIndex: 999 }}
+                  onClick={() =>
+                    isSpeechRecognitionSupported()
+                      ? startRecognition()
+                      : requestPermission()
+                  }
+                />
+              </VoiceRecognitionContainer>
+              {renderMic && (
+                <Mic
+                  handleCloseMic={handleCloseMic}
+                  inputValue={inputValue}
+                  transcript={transcript.replace(/\s/g, "")}
+                  dots={dots}
+                />
+              )}
+            </div>
+          ) : (
+            <div
+              style={{
+                padding: "5px",
+                fontSize: "17px",
+                cursor: "pointer",
+                margin: "20px 100px 20px 100px",
+              }}
+            >
+              <Button
+                variant="contained"
+                startIcon={<CheckCircleSharp />}
+                style={{
+                  fontFamily: "IBM Plex Sans Devanagari",
+                  width: "100%",
+                  borderRadius: "8px",
+                  marginBottom: "10px",
+                  backgroundColor: "#91278F",
+                }}
+                onClick={() => setContinuePinCode(true)}
+              >
+                {(FlowHeaders as any)[selectedLanguage]?.enter}
+              </Button>
+
+              <Button
+                variant="contained"
+                startIcon={<Cancel />}
+                style={{
+                  fontFamily: "IBM Plex Sans Devanagari",
+                  width: "100%",
+                  borderRadius: "8px",
+                  marginBottom: "10px",
+                  backgroundColor: "#91278F",
+                }}
+                onClick={skipPinCode}
+              >
+                {(FlowHeaders as any)[selectedLanguage]?.skip}
+              </Button>
+            </div>
+          )}
         </ContainerVoice>
       ) : (
         // verfi the micData no2
@@ -285,7 +333,9 @@ function PinCode() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(FlowHeaders as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
@@ -307,7 +357,7 @@ function PinCode() {
                 }}
               >
                 {!error ? (
-                  <p style={{ color: "red", fontSize: "12px" }}>
+                  <p style={{ color: "red", fontSize: "15px" }}>
                     {errorMessage}
                   </p>
                 ) : (
@@ -340,7 +390,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -354,7 +404,8 @@ function PinCode() {
                 <Button
                   variant="outlined"
                   startIcon={<Cancel />}
-                  style={{ fontFamily: 'IBM Plex Sans Devanagari',
+                  style={{
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -397,7 +448,7 @@ function PinCode() {
                     outline: "none",
                     letterSpacing: "22px",
                     textAlign: "center",
-                    border: "1px solid gray",
+                    border: "1px solid white",
                   }}
                 />
 
@@ -406,7 +457,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

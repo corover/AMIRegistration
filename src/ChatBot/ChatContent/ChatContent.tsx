@@ -38,9 +38,9 @@ function ChatContent() {
     areaOfIntrest,
   } = useSelector(flowReducer);
   const { loading, bgColor } = useSelector(reducer);
-  const { apiData, isBlocked, hasProfile, isNewUser } =
+  const { apiData, isBlocked, hasProfile, isNewUser, enableLocation } =
     useSelector(apiSelector);
-
+  console.log("enableLocation", enableLocation);
   const renderComponent = () => {
     switch (true) {
       case loading:
@@ -61,13 +61,13 @@ function ChatContent() {
         return <Gender />;
       case dobView:
         return <DateOfBirth />;
-      case stateView:
+      case !enableLocation && stateView:
         return <State />;
-      case districtView:
+      case !enableLocation && districtView:
         return <District />;
-      case cityView:
+      case !enableLocation && cityView:
         return <City />;
-      case pincodeView:
+      case !enableLocation && pincodeView:
         return <PinCode />;
       case areaOfIntrest:
         return <AreaOfIntrest />;
@@ -77,7 +77,6 @@ function ChatContent() {
         return <LanguageSelection />;
     }
   };
-
   return (
     <div className="ContentChat" style={{ backgroundColor: `${bgColor}` }}>
       <TopLogoHeader className={"TopLogoHeader"}>

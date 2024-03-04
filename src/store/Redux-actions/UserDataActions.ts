@@ -15,9 +15,7 @@ export const language_data = (value: any) => ({
   payload: value,
 });
 
-export const mobileNo_data = (value: any) => (
-  
-  {
+export const mobileNo_data = (value: any) => ({
   type: MOBILE_NO_DATA,
   payload: value,
 });
@@ -32,10 +30,19 @@ export const name_data = (value: any) => ({
   payload: value,
 });
 
-export const gender_data = (value: any) => ({
-  type: GENDER_DATA,
-  payload: value,
-});
+// export const gender_data = (value: any) => ({
+//   type: GENDER_DATA,
+//   payload: value,
+// });
+
+export const gender_data = (value: any) => {
+  console.log("action ", value); 
+  return {
+    type: GENDER_DATA,
+    payload: value,
+  };
+};
+
 
 export const dob_data = (value: any) => ({
   type: DOB_DATA,

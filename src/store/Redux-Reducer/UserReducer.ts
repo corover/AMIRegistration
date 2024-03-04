@@ -13,18 +13,17 @@ import {
 } from "../Redux-actions/UserDataActions";
 
 const initialState = {
-  languageData:"en",
+  languageData: "en",
   mobileNoData: null,
   generateOtpData: null,
   nameData: null,
   genderData: null,
-  dobData: null,
+  dobData: "0",
   stateData: null,
   districtData: null,
   cityData: null,
-  pincodeData: null,
+  pincodeData: "111111",
 };
-
 // Reducer function
 const userProfileReducer = (state = initialState, action: any) => {
   switch (action.type) {
@@ -37,6 +36,7 @@ const userProfileReducer = (state = initialState, action: any) => {
     case NAME_DATA:
       return { ...state, nameData: action.payload };
     case GENDER_DATA:
+      console.log("red", action.payload);
       return { ...state, genderData: action.payload };
     case DOB_DATA:
       return { ...state, dobData: action.payload };

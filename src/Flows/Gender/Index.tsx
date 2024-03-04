@@ -23,16 +23,20 @@ import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
-import { isResponse, playAudioURL } from "../../utils/data";
+import { filterValue, isResponse, playAudioURL } from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
+import { userProfileState } from "../../store/Redux-selector/Selector";
+import { setGenderData } from "../../store/Redux-Dispatcher/UserDispatcher";
+import userProfileReducer from "../../store/Redux-Reducer/UserReducer";
 
 const btnStyle = {
   backgroundColor: "#ededed",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
+  border: "3px solid #F0D9F0",
 };
 
 function Gender() {
@@ -42,15 +46,20 @@ function Gender() {
   const [tryAgain, setTryAgain] = useState(false);
   const [renderMic, setRenderMic] = useState(false);
   const [dots, setDots] = useState(3);
-  const nextContext = useSelector(apiSelector).nextContext;
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [dropdownStyle, setDropDownStyle] = useState("dropDown");
+  const [dropdownStyle, setDropDownStyle] = useState("dropDown_");
   const [invalid, SetInvalid] = useState(false);
   const [check, setCheck] = useState(true);
   const [transcriptState, setTranscriptState] = useState("");
-  const apiData = useSelector(apiSelector).apiData;
 
+  const { enableLocation, nextContext,apiData } = useSelector(apiSelector);
+  const flowComplete = useSelector(userProfileState);
+  const [flag, setFlag] = useState(false);
+
+  const { genderData } = useSelector(userProfileState);
+
+  
   const {
     transcript,
     startRecognition,
@@ -60,6 +69,10 @@ function Gender() {
     listening,
     resetTranscript,
   } = useSpeechRecognitionHook();
+
+  // const handleSubmitMapping = (data: string) => {
+
+  // };
 
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
@@ -76,22 +89,29 @@ function Gender() {
     setRenderMic(false);
   };
 
-  const handleSubmit = async () => {
-    stopRecognition();
-    await registerFlow(inputValue, nextContext);
-  };
-
   const filteredStatesOptions =
     apiData &&
+    apiData.gender &&
     apiData.gender.length > 0 &&
     apiData.gender.filter((val: any) =>
       val.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
   const handleNo = () => {
+    console.log(1);
     stopRecognition();
     setTryAgain(true);
     setCheckValue(false);
+  };
+
+  const handleSubmit = () => {
+    stopRecognition();
+    registerFlow(inputValue, nextContext)
+    // setTimeout(() => {
+    //   !enableLocation
+    //     ? 
+    //     : registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+    // }, 1000);
   };
 
   useEffect(() => {
@@ -180,8 +200,17 @@ function Gender() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript);
-      setInputValue(transcript);
+      transcript.length > 0 &&
+        // setGenderData(
+        //   filterValue(transcript).charAt(0).toUpperCase() +
+        //     filterValue(transcript).slice(1)
+        // );
+
+      setTranscriptState(filterValue(transcript));
+      setInputValue(
+        filterValue(transcript).charAt(0).toUpperCase() +
+          filterValue(transcript).slice(1)
+      );
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -192,7 +221,8 @@ function Gender() {
         break;
 
       case "negative":
-        handleCloseMic();
+        stopRecognition();
+        setRenderMic(false);
         handleNo();
         break;
 
@@ -200,13 +230,14 @@ function Gender() {
     }
   }, [transcript]);
 
-  React.useEffect(() => {
-    if (apiData && apiData.gender.length < 5) {
-      setDropDownStyle("dropDown_");
-    } else {
-      setDropDownStyle("dropDown");
-    }
-  }, [apiData.gender]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     !enableLocation
+  //       ? flag && registerFlow(inputValue, nextContext)
+  //       : flag &&
+  //         registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+  //   }, 1000);
+  // }, [genderData, flag]);
 
   return (
     <div>
@@ -267,10 +298,12 @@ function Gender() {
                         <p
                           className="optionItem"
                           onClick={() => {
-                            stopRecognition();
-                            setInputValue(val.name);
-                            registerFlow(val.name, nextContext);
-                            setCheck(false);
+                            // setGenderData(
+                            //   val.name.charAt(0).toUpperCase() +
+                            //     val.name.slice(1)
+                            // );
+                            setFlag(true);
+                            registerFlow(val.name, nextContext)
                           }}
                         >
                           {val.name}
@@ -312,7 +345,9 @@ function Gender() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(FlowHeaders as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {(FlowHeaders as any)[selectedLanguage]?.gender}
@@ -365,7 +400,7 @@ function Gender() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: "IBM Plex Sans Devanagari",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -381,7 +416,7 @@ function Gender() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -468,10 +503,12 @@ function Gender() {
                             <p
                               className="optionItem"
                               onClick={() => {
-                                stopRecognition();
-                                setInputValue(val.name);
-                                registerFlow(val.name, nextContext);
-                                setCheck(false);
+                                // setGenderData(
+                                //   val.name.charAt(0).toUpperCase() +
+                                //     val.name.slice(1)
+                                // );
+                                setFlag(true);
+                                registerFlow(val.name, nextContext)
                               }}
                             >
                               {val.name}

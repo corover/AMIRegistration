@@ -23,7 +23,7 @@ import ListeningMic from "../../UI/Listening";
 function LanguageSelection() {
   const { selectedLanguage } = useSelector(reducer);
   const [lang, setLang] = useState("en");
-  const nextContext = useSelector(apiSelector).nextContext;
+  const { nextContext, enableLocation } = useSelector(apiSelector);
 
   const {
     transcript,
@@ -77,12 +77,14 @@ function LanguageSelection() {
   }
 
   useEffect(() => {
-    const val = getLangIdByName(transcript)
-    if(val){
+    const val = getLangIdByName(transcript);
+    if (val) {
       handleLanguageChange(val);
     }
-    
   }, [transcript]);
+
+  
+  
 
   return (
     <div style={{ height: "fit-content" }}>
@@ -99,7 +101,9 @@ function LanguageSelection() {
             overflow: "scroll",
             alignContent: "space-between",
             justifyContent: "center",
-            maxHeight: "60vh",
+            // maxHeight: "60vh",
+            padding: "0px 6px ",
+            marginTop:"15px"
           }}
         >
           {languageList &&
@@ -122,20 +126,7 @@ function LanguageSelection() {
             right: 0,
           }}
         >
-          {/* <Button
-            variant="contained"
-            startIcon={<CheckCircleSharp />}
-            style={{
-              borderRadius: "8px",
-              backgroundColor: "#91278F",
-              width: "fitContent",
-              display: "flex",
-              margin: "auto",
-            }}
-            onClick={onClickLanguage}
-          >
-            {(FlowHeaders as any)[selectedLanguage]?.submit}
-          </Button> */}
+          
           {!listening ? (
             <>
               <div
@@ -149,7 +140,7 @@ function LanguageSelection() {
                 }}
               >
                 <img
-                  onClick={() =>
+                  onClick={() =>      
                     isSpeechRecognitionSupported()
                       ? startRecognition()
                       : requestPermission()
@@ -170,8 +161,8 @@ function LanguageSelection() {
                   // disabled={selectedOptions.length < 3 ? true : false}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
-                    width: "30%",
+                    fontFamily: "IBM Plex Sans Devanagari",
+                    width: "fit-content",
                     borderRadius: "8px",
                     backgroundColor: "#91278F",
                     marginTop: "20px",

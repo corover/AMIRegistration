@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import store from "./store/Redux/Redux-Store";
+import { Provider } from "react-redux";
+
 // import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 
 // function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
@@ -21,14 +24,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    {/* <ErrorBoundary
-      FallbackComponent={ErrorFallback}
-      onReset={(details) => {
-        console.log(details);
-      }}
-    > */}
-    <App />
-    {/* </ErrorBoundary> */}
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );
 

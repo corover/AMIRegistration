@@ -102,7 +102,6 @@ function AreaOfIntrest() {
         Number(interestId),
       ]);
     }
-    console.log(transcript);
   }, [transcript]);
 
   return (
@@ -116,14 +115,14 @@ function AreaOfIntrest() {
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          cursor: "pointer",
-          overflow: "scroll",
-          // alignContent: "space-between",
-          marginTop: "15px",
-          justifyContent: "center",
-          maxHeight: "60vh",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            cursor: "pointer",
+            overflow: "scroll",
+            alignContent: "space-between",
+            justifyContent: "center",
+            // maxHeight: "60vh",
+            padding: "0px 6px ",
         }}
       >
         {apiData &&
@@ -182,7 +181,7 @@ function AreaOfIntrest() {
               startIcon={<CheckCircleSharp />}
               style={{
                 fontFamily: "IBM Plex Sans Devanagari",
-                width: "104%",
+                width: "fit-content",
                 borderRadius: "8px",
                 backgroundColor: "#91278F",
                 marginTop: "10px",

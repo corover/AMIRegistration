@@ -3,16 +3,16 @@ import moment from "moment";
 export const languageList = [
   { name: "English", id: "en" },
   { name: "हिंदी", id: "hi" },
-  { name: "தமிழ்", id: "ta" },
-  { name: "తెలుగు", id: "te" },
-  { name: "ಕನ್ನಡ", id: "kn" },
-  { name: "മലയാളം", id: "ml" },
-  { name: "বাঙালি", id: "bn" },
-  { name: "اردو", id: "ur" },
   { name: "मराठी", id: "mr" },
   { name: "ગુજરાતી", id: "gu" },
+  { name: "മലയാളം", id: "ml" },
   { name: "ਪੰਜਾਬੀ", id: "pa" },
+  { name: "తెలుగు", id: "te" },
   { name: "ଓଡିଆ", id: "or" },
+  { name: "ಕನ್ನಡ", id: "kn" },
+  { name: "বাঙালি", id: "bn" },
+  { name: "தமிழ்", id: "ta" },
+  { name: "اردو", id: "ur" },
   { name: "অসমীয়া", id: "as" },
 ];
 
@@ -201,10 +201,13 @@ const voices = {
 export const getFrequentVoice = (language: "en" | "hi"): string => {
   const voicesForLanguage = voices[language] as any;
   const voiceKeys = Object.keys(voicesForLanguage);
-  // console.log(voiceKeys)
   const randomKey = voiceKeys[Math.floor(Math.random() * voiceKeys.length)];
-  // console.log(randomKey)
   return voicesForLanguage[randomKey];
-
-  
 };
+
+export const filterValue = (value: string | number) => {
+  return typeof value === "string"
+    ? value.replace(/[^a-zA-Z0-9]/g, "")
+    : String(value).replace(/[^a-zA-Z0-9]/g, "");
+};
+

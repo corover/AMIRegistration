@@ -164,10 +164,12 @@ body {
 .optionItem {
   /* border-top: 1px solid lightgray; */
   padding: 4px;
-  font-size: 12px;
+  font-size: 16px;
   text-align: center;
   margin: 4px;
   cursor: pointer;
+  font-weight: 500;
+
 }
 
 /* Basic dropdown styling */
@@ -186,13 +188,13 @@ select {
   margin-right: 5px;
   padding: 5px;
   padding-left: 10px;
-  border: 1px solid #91278F;
-  color: #91278F;
+  border: 1px solid #91278f;
+  color: #91278f;
   border-radius: 10px;
   font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s;
-  background-color: #DFB0DF;
+  background-color: #dfb0df;
 }
 
 .input-upload {
@@ -222,7 +224,7 @@ select {
   padding: 10px;
   font-size: 16px;
   color: white;
-  background-color: #91278F;
+  background-color: #91278f;
   width: 367px;
   /* height: 28px; */
   text-align: center;
@@ -266,82 +268,72 @@ select {
 }
 
 .optionContainer {
-  /* background-color: #f8f6f4; */
-
-  background-color: rgb(252 239 250 / 36%);
-
+  /* background-color: rgb(252 239 250 / 36%); */
   align-self: center;
   border-radius: 18px 18px 18px 18px;
   padding: 5px;
   margin-left: 15px;
   margin-right: 15px;
+  /* font-weight: 500; */
   min-width: 20%;
   height: -moz-fit-content;
   height: fit-content;
   font-size: large;
   font-stretch: normal;
   margin-bottom: 10px;
+  color: rgb(145, 39, 143);
+  border: 2px solid #F0D9F0;
 }
 
 .other {
-
-
   margin: 4px;
   font-size: 18px;
   padding: 8px;
   width: fit-content;
   text-align: center;
-  border: 1px solid #91278F;
+  border: 1px solid #91278f;
   border-radius: 30px;
-  color: #91278F;
+  color: #91278f;
   background-color: #fff;
 }
 
 .selected {
- 
-
   margin: 4px;
   padding: 8px;
   font-size: 18px;
   width: fit-content;
   text-align: center;
-  border: 1px solid #91278F;
+  border: 1px solid #91278f;
   border-radius: 30px;
-  color: #91278F;
+  color: #91278f;
   font-weight: bold;
-  background-color: #DFB0DF;
+  background-color: #dfb0df;
 }
 
-
 .otherIntrest {
- 
-
   margin: 4px;
-  font-size: 12px;
+  font-size: 17px;
   padding: 4px;
   width: fit-content;
   text-align: center;
-  border: 1px solid #91278F;
+  border: 1px solid #91278f;
   border-radius: 30px;
-  color: #91278F;
+  color: #91278f;
   background-color: #fff;
 }
 
 .selectedIntrest {
- 
-
   margin: 4px;
   padding: 4px;
-  font-size: 12px;
+  font-size: 16px;
   width: fit-content;
   text-align: center;
-  border: 1px solid #91278F;
+  border: 1px solid #91278f;
   border-radius: 30px;
-  color: #91278F;
+  color: #91278f;
   font-weight: bold;
-  background-color: #DFB0DF;
+  background-color: #dfb0df;
 }
-
 
 .button {
   /* btn */
@@ -416,7 +408,7 @@ select {
 .read-more {
   display: block;
   margin: 10px auto;
-  background-color: #91278F;
+  background-color: #91278f;
   color: #fff;
   border: none;
   padding: 10px;
@@ -453,7 +445,7 @@ select {
   margin: 0px;
   padding: 4px 10px 0px 10px;
   overflow-wrap: break-word;
-  color: #91278F;
+  color: #91278f;
   font-weight: 400;
   font-size: 14px;
 }
@@ -535,19 +527,20 @@ hr {
   transition: background-color 0.3s;
 }
 .inputSchemes {
-  font-family: 'IBM Plex Sans Devanagari';
+  font-family: "IBM Plex Sans Devanagari";
   border: none;
   height: 42px;
   font-size: 18px;
   /* background-color: #ededed; */
   border-radius: 15px;
   width: 100%;
-  border: 1px solid #8c99a6;
+  border: 1px solid #f0d9f0;
   /* border: none; */
   padding-left: 12px;
   outline: none;
   margin-top: 10px;
   margin-bottom: 10px;
+  background-color: #f0d9f0;
 }
 
 .blink {
@@ -914,7 +907,7 @@ hr {
 }
 
 #countdown-number {
-  color: #91278F;
+  color: #91278f;
   display: inline-block;
   line-height: 40px;
 }
@@ -933,7 +926,7 @@ circle {
   stroke-dashoffset: 0px;
   stroke-linecap: round;
   stroke-width: 2px;
-  stroke: #91278F;
+  stroke: #91278f;
   fill: none;
   animation: countdown 10s linear infinite forwards;
 }

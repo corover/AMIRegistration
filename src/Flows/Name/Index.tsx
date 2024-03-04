@@ -12,11 +12,11 @@ import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
 import { setName_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
-import { registerFlow } from "../../Apis";
+import {  registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
+import { filterValue, isResponse, playAudioURL } from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
@@ -30,10 +30,10 @@ function Name() {
   const [renderMic, setRenderMic] = useState(false);
   const [dots, setDots] = useState(3);
   const [transcriptState, setTranscriptState] = useState("");
-
-  const { nextContext, apiData } = useSelector(apiSelector);
+  const { nextContext, apiData, accessToken, location, enableLocation } =
+    useSelector(apiSelector);
   const [inputValue, setInputValue] = useState("");
-
+  const { mobileNoData } = useSelector(userProfileState);
   const {
     transcript,
     startRecognition,
@@ -76,7 +76,7 @@ function Name() {
 
   const optWrong = () => {
     return (
-      <p style={{ color: "red", fontSize: "12px" }}>
+      <p style={{ color: "red", fontSize: "15px" }}>
         {(FlowHeaders as any)[selectedLanguage]?.optWrong}
       </p>
     );
@@ -125,6 +125,9 @@ function Name() {
       });
     }, 500);
 
+    // if (enableLocation && accessToken.length > 0) {
+    //   locationApi(location.lat, location.lng, mobileNoData);
+    // }
     return () => {
       clearInterval(interval);
       stopRecognition();
@@ -165,8 +168,8 @@ function Name() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript);
-      setInputValue(transcript);
+      setTranscriptState(filterValue(transcript));
+      setInputValue(filterValue(transcript));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -260,7 +263,9 @@ function Name() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(FlowHeaders as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {(FlowHeaders as any)[selectedLanguage]?.name}
@@ -304,7 +309,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -319,7 +324,7 @@ function Name() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -358,7 +363,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",
