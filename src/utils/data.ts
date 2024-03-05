@@ -95,7 +95,6 @@ function isValidDay(year: number, month: number, day: number): boolean {
 export function formatDateToYYYYMMDD(dateString: string): string | undefined {
   // Remove ordinals from the input date string
   dateString = dateString.replace(/(\d+)(st|nd|rd|th)/g, "$1");
-
   let parsedDate;
   if (moment(dateString).isValid()) {
     parsedDate = new Date(dateString);
@@ -122,8 +121,7 @@ export function formatDateToYYYYMMDD(dateString: string): string | undefined {
   const formattedMonth = month.toString().padStart(2, "0");
   const formattedDay = day.toString().padStart(2, "0");
   const yyyymmdd = `${year}${formattedMonth}${formattedDay}`;
-
-  return yyyymmdd;
+  return moment(yyyymmdd).format("YYYY-MM-DD");
 }
 
 export const playAudioURL = (
@@ -210,4 +208,3 @@ export const filterValue = (value: string | number) => {
     ? value.replace(/[^a-zA-Z0-9]/g, "")
     : String(value).replace(/[^a-zA-Z0-9]/g, "");
 };
-

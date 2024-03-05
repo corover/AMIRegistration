@@ -43,12 +43,20 @@ function DateOfBirth() {
   const [inputValue, setInputValue] = useState("");
   const [transcriptState, setTranscriptState] = useState("");
 
-  const { enableLocation, apiData } = useSelector(apiSelector);
+  const { enableLocation,apiData } = useSelector(apiSelector);
   const flowComplete = useSelector(userProfileState);
 
   const [date, setDate] = useState("");
 
- 
+  // const  = {
+  //   status: "success",
+  //   next_context: "862a79a6-3a3c-46f3-8721-332fe4ef4c00",
+  //   gender: "Male",
+  //   audio:
+  //     "https://storage.googleapis.com/ami-tts-storage/44791ebb-176c-4790-8312-1df8bd324a9f.wav",
+  //   dobView: true,
+  // };
+
   const {
     transcript,
     startRecognition,
@@ -75,7 +83,7 @@ function DateOfBirth() {
   };
 
   const handleSubmit = async () => {
-   
+    // console.log(11);
     stopRecognition();
     if (moment(inputValue).format("YYYYMMDD") !== "Invalid date") {
       !enableLocation
@@ -92,7 +100,7 @@ function DateOfBirth() {
 
   const handleDateChange = (selectedDate: any) => {
     const date = moment(selectedDate.$d).format("YYYYMMDD");
-    console.log(console.log(date));
+    // console.log(console.log(date));
     //
   };
 
@@ -174,13 +182,14 @@ function DateOfBirth() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(filterValue(transcript));
+      setTranscriptState((transcript));
       //  setInputValue(transcript);
       const data = formatDateToYYYYMMDD(transcript);
       data && setInputValue(filterValue(data));
-      transcript.length > 0 && setDOB( moment(data).format("YYY-MM-DD"));
-    }
+      transcript.length > 0 && setDOB(data);
 
+      // console.log(transcript);
+    }
 
     let response = isResponse(transcript, selectedLanguage);
 
@@ -405,7 +414,7 @@ function DateOfBirth() {
                   marginBottom: "10px",
                 }}
                 onClick={() => {
-                  setDOB( moment(inputValue).format("YYYY-MM-DD"));
+                  setDOB(inputValue);
 
                   setTimeout(() => {
                     !enableLocation

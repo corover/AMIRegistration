@@ -40,7 +40,7 @@ function ChatContent() {
   const { loading, bgColor } = useSelector(reducer);
   const { apiData, isBlocked, hasProfile, isNewUser, enableLocation } =
     useSelector(apiSelector);
-  console.log("enableLocation", enableLocation);
+  // console.log("enableLocation", enableLocation);
   const renderComponent = () => {
     switch (true) {
       case loading:

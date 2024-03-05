@@ -36,7 +36,7 @@ export const name_data = (value: any) => ({
 // });
 
 export const gender_data = (value: any) => {
-  console.log("action ", value); 
+  // console.log("action ", value); 
   return {
     type: GENDER_DATA,
     payload: value,

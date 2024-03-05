@@ -36,7 +36,6 @@ const userProfileReducer = (state = initialState, action: any) => {
     case NAME_DATA:
       return { ...state, nameData: action.payload };
     case GENDER_DATA:
-      console.log("red", action.payload);
       return { ...state, genderData: action.payload };
     case DOB_DATA:
       return { ...state, dobData: action.payload };

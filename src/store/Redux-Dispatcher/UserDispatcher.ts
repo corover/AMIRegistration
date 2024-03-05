@@ -25,7 +25,6 @@ export const setNameData = (val: any) => {
 };
 
 export const setGenderData = (val: any) => {
-  console.log("red", val)
   store.dispatch(gender_data(val));
 };
 

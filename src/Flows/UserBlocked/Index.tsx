@@ -15,7 +15,7 @@ function BlockedUser() {
       console.error("Error playing audio:", error);
     });
   }, []);
-  console.log(selectedLanguage)
+  // console.log(selectedLanguage)
   return (
     <ContainerVoice className={"ContainerVoice"}>
       <div
