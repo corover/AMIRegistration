@@ -122,7 +122,7 @@ function AreaOfIntrest() {
             alignContent: "space-between",
             justifyContent: "center",
             // maxHeight: "60vh",
-            padding: "0px 6px ",
+            padding: "0px 10px ",
         }}
       >
         {apiData &&

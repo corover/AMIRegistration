@@ -224,8 +224,8 @@ console.log(111)
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(filterValue(transcript));
-      setInputValue(filterValue(transcript));
+      setTranscriptState((transcript));
+      setInputValue((transcript));
     }
 
     let response = isResponse(transcript, selectedLanguage);

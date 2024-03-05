@@ -205,6 +205,6 @@ export const getFrequentVoice = (language: "en" | "hi"): string => {
 
 export const filterValue = (value: string | number) => {
   return typeof value === "string"
-    ? value.replace(/[^a-zA-Z0-9]/g, "")
-    : String(value).replace(/[^a-zA-Z0-9]/g, "");
+    ? value.replace(/[^a-zA-Z0-9\s]|\.+$/g, "")
+    : String(value).replace(/[^a-zA-Z0-9\s]|\.+$/g, "");
 };
