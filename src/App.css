@@ -15,8 +15,8 @@
 }
 
 
-/* body,button,Button{
-  font-family: 'IBM Plex Sans Devanagari ';
+/* p,span,div,body,button,Button{
+  font-family: 'IBM Plex Sans Devanagari !important';
 } */
 
 
