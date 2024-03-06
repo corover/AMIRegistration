@@ -39,7 +39,7 @@ export const registerFlow = async (apiBody: any, nextContext: any) => {
         setTimeout(() => {
           setLoading(false);
           setNextContext(response.data);
-        }, 1500);
+        }, 1000);
       }
       if (response.data.location) {
         setPinCode(response.data.location.pincode);

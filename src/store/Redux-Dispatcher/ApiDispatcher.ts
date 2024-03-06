@@ -23,6 +23,7 @@ import {
   setPinCode_view,
   setIntrest_view,
   setReset_View,
+  setLocation_View,
 } from "./FlowDispatcher";
 import {
   setLanguageData_,
@@ -32,6 +33,7 @@ import {
   setState,
   setCity,
   setGenderData,
+  setDistrict,
 } from "./UserDispatcher";
 
 import { setBackgroundColor } from "./Dispatcher";
@@ -44,7 +46,7 @@ export const setNextContext = (val: any) => {
     //mobile
     case "434171c7-254e-4693-9bd2-4e054f5f3e39":
       setLanguage_view(false);
-      setMobile_no_view(val.mobileView);
+      setMobile_no_view(true);
       setLanguageData_(val.language);
       setBackgroundColor("#91278F");
       break;
@@ -58,17 +60,13 @@ export const setNextContext = (val: any) => {
       setMobileData(val.mobile);
       break;
 
-   
-   
+    //location
 
-    
-
-   
-
-    //name
-    case "07a5c12c-22fb-4faa-88cb-ef7ebb0297a6":
-      setGenarateOTP_view(!val.nameView);
-      setName_view(val.nameView);
+    case "3d7fe8cd-7962-4a15-bb05-7450bda53852":
+      setLocation_View(true);
+      setLanguage_view(false);
+      setMobile_no_view(false);
+      setGenarateOTP_view(false);
       store.dispatch(access_Token(val.data.accessToken));
       store.dispatch(profileIsBlocked(val.data.isBlocked));
       store.dispatch(profile_HasProfile(val.data.hasProfile));
@@ -76,55 +74,51 @@ export const setNextContext = (val: any) => {
       setBackgroundColor("#91278F");
       break;
 
-      //gender
-      case "862a79a6-3a3c-46f3-8721-332fe4ef4c75":
-        setName_view(false);
-        setGender_view(true);
-        setNameData(val.name);
-        setBackgroundColor("#91278F");
-        break;
-    //dob
-   
-
-    case "862a79a6-3a3c-46f3-8721-332fe4ef4c00":
-      setGender_view(!val.dobView);
-      setDOB_view(val.dobView);
-      setGenderData(val.gender.charAt(0).toUpperCase() + val.gender.slice(1));
+    //name
+    case "07a5c12c-22fb-4faa-88cb-ef7ebb0297a6":
+      setName_view(true);
+      setLocation_View(false);
       setBackgroundColor("#91278F");
       break;
 
-       //state
-    case "709a143c-93b5-4211-a789-61123b3e3a3c":
+    //gender
+    case "862a79a6-3a3c-46f3-8721-332fe4ef4c75":
+      setName_view(false);
+      setGender_view(true);
+      setNameData(val.name);
+      setBackgroundColor("#91278F");
+      break;
+
+    //dob
+    case "4b7c27be-5f61-437e-a271-ad72c9a20d5a":
       setGender_view(false);
-       setDOB(moment(val.dob).format("YYYY-MM-DD"));
-       setDOB_view(false)
+      setDOB_view(true);
+      setGenderData(val.gender);
+      setBackgroundColor("#91278F");
+      break;
+
+    //state
+    case "709a143c-93b5-4211-a789-61123b3e3a3c":
+      setLocation_View(false);
       setState_view(true);
       setBackgroundColor("#91278F");
       break;
 
+    //district
+    case "0c8ec39f-5088-4315-b13d-7d7b67b5ad4c":
+      setState_view(false);
+      setState(val.state);
+      setDistrict_view(true);
+      setBackgroundColor("#91278F");
+      break;
 
- //district
- case "c6c0d759-f3af-44b6-825b-5909135e3b44":
-  setState_view(false);
-  setState(val.state);
-  setDistrict_view(true);
-  setBackgroundColor("#91278F");
-  break;
+    //pincode
+    case "ebb762fb-3f7b-4fe3-ad1f-3b7b19cd5e68":
+      setDistrict_view(false);
+      setPinCode_view(true);
+      setBackgroundColor("#91278F");
 
-//city
-case "0c8ec39f-5088-4315-b13d-7d7b67b5ad4c":
-  setDistrict_view(false);
-  setCity_view(true);
-  setBackgroundColor("#91278F");
-  break;
-
- //pincode
- case "4b7c27be-5f61-437e-a271-ad72c9a20d5a":
-  setCity_view(false);
-  setPinCode_view(true);
-  setCity(val.city);
-  setBackgroundColor("#91278F");
-  break;
+      break;
 
     //aoi
     case "4b7c27be-5f61-437e-a271-ad72c9a11y66":
@@ -132,7 +126,6 @@ case "0c8ec39f-5088-4315-b13d-7d7b67b5ad4c":
       setDOB_view(false);
       setState_view(false);
       setDistrict_view(false);
-      setCity_view(false);
       setPinCode_view(false);
       setIntrest_view(true);
       setBackgroundColor("white");

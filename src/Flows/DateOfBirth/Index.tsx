@@ -86,9 +86,9 @@ function DateOfBirth() {
     // console.log(11);
     stopRecognition();
     if (moment(inputValue).format("YYYYMMDD") !== "Invalid date") {
-      !enableLocation
-        ? registerFlow(moment(inputValue).format("YYYY-MM-DD"), nextContext)
-        : registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+      // !enableLocation
+        // ? registerFlow(moment(inputValue).format("YYYY-MM-DD"), nextContext)
+         registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
     }
   };
 
@@ -173,7 +173,7 @@ function DateOfBirth() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+  },1500);
 
     return () => {
       clearTimeout(timeoutId);
@@ -341,7 +341,7 @@ function DateOfBirth() {
                       variant="contained"
                       startIcon={<CheckCircleSharp />}
                       style={{
-                        fontFamily: "IBM Plex Sans Devanagari",
+                        fontFamily: 'IBM Plex Sans Devanagari ',
                         width: "100%",
                         borderRadius: "8px",
                         marginBottom: "10px",
@@ -357,7 +357,7 @@ function DateOfBirth() {
                     variant="outlined"
                     startIcon={<Cancel />}
                     style={{
-                      fontFamily: "IBM Plex Sans Devanagari",
+                      fontFamily: 'IBM Plex Sans Devanagari ',
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -405,7 +405,7 @@ function DateOfBirth() {
                 variant="contained"
                 startIcon={<CheckCircleSharp />}
                 style={{
-                  fontFamily: "IBM Plex Sans Devanagari",
+                  fontFamily: 'IBM Plex Sans Devanagari ',
                   borderRadius: "8px",
                   backgroundColor: "#91278F",
                   width: "fitContent",
@@ -417,12 +417,13 @@ function DateOfBirth() {
                   setDOB(inputValue);
 
                   setTimeout(() => {
-                    !enableLocation
-                      ? registerFlow(
-                          moment(inputValue).format("YYYY-MM-DD"),
-                          nextContext
-                        )
-                      : registerFlow(
+                    // !enableLocation
+                    //   ? registerFlow(
+                    //       moment(inputValue).format("YYYY-MM-DD"),
+                    //       nextContext
+                    //     )
+                    //   : 
+                      registerFlow(
                           flowComplete,
                           "4b7c27be-5f61-437e-a271-ad72c9a20d5a"
                         );

@@ -31,11 +31,11 @@ import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 const btnStyle = {
-  backgroundColor: "#ededed",
+  backgroundColor: "white",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
-  border: "3px solid #F0D9F0"
+  border: "1px solid #F0D9F0"
 };
 
 function District() {
@@ -183,7 +183,7 @@ function District() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+  },1500);
 
     return () => {
       clearTimeout(timeoutId);
@@ -192,10 +192,13 @@ function District() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(filterValue(transcript));
-      setInputValue(filterValue(transcript));
+   
+      // if(selectedLanguage==="hi"){
+   setTranscriptState((transcript));
+      setInputValue((transcript));
+      // }
     }
-
+console.log(transcript)
     let response = isResponse(transcript, selectedLanguage);
     switch (response) {
       case "positive":
@@ -381,7 +384,7 @@ function District() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: "IBM Plex Sans Devanagari",
+                      fontFamily: 'IBM Plex Sans Devanagari ',
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -397,7 +400,7 @@ function District() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",

@@ -23,7 +23,12 @@ import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
-import { filterValue, isResponse, playAudioURL } from "../../utils/data";
+import {
+  filterValue,
+  getGender,
+  isResponse,
+  playAudioURL,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
@@ -32,11 +37,11 @@ import { setGenderData } from "../../store/Redux-Dispatcher/UserDispatcher";
 import userProfileReducer from "../../store/Redux-Reducer/UserReducer";
 
 const btnStyle = {
-  backgroundColor: "#ededed",
+  backgroundColor: "white",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
-  border: "3px solid #F0D9F0",
+  border: "1px solid #F0D9F0",
 };
 
 function Gender() {
@@ -53,13 +58,12 @@ function Gender() {
   const [check, setCheck] = useState(true);
   const [transcriptState, setTranscriptState] = useState("");
 
-  const { enableLocation, nextContext,apiData } = useSelector(apiSelector);
+  const { enableLocation, nextContext, apiData } = useSelector(apiSelector);
   const flowComplete = useSelector(userProfileState);
   const [flag, setFlag] = useState(false);
 
   const { genderData } = useSelector(userProfileState);
 
-  
   const {
     transcript,
     startRecognition,
@@ -106,10 +110,10 @@ function Gender() {
 
   const handleSubmit = () => {
     stopRecognition();
-    registerFlow(inputValue, nextContext)
+    registerFlow(inputValue, nextContext);
     // setTimeout(() => {
     //   !enableLocation
-    //     ? 
+    //     ?
     //     : registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
     // }, 1000);
   };
@@ -120,21 +124,21 @@ function Gender() {
         setAskValue(false);
         setCheckValue(true);
       }
-    }, 1800);
+    }, 1500);
 
     const value_ = setTimeout(() => {
       if (tryAgain && transcriptState.length > 0) {
         setTryAgain(false);
         setCheckValue(false);
       }
-    }, 2200);
+    }, 1800);
 
     if (
-      transcript.length > 0 &&
+      transcriptState.length > 0 &&
       check &&
       Array.isArray(apiData.gender) &&
       apiData.gender.some((option: any) =>
-        transcript.toLowerCase().includes(option.name.toLowerCase())
+        transcriptState.toLowerCase().includes(option.name.toLowerCase())
       )
     ) {
       SetInvalid(false);
@@ -205,11 +209,13 @@ function Gender() {
         //   filterValue(transcript).charAt(0).toUpperCase() +
         //     filterValue(transcript).slice(1)
         // );
-
-      setTranscriptState(filterValue(transcript));
+        setTranscriptState(
+          getGender(transcript) ? getGender(transcript) : transcript
+        );
       setInputValue(
-        filterValue(transcript).charAt(0).toUpperCase() +
-          filterValue(transcript).slice(1)
+        getGender(transcript.charAt(0).toUpperCase() + transcript.slice(1))
+          ? getGender(transcript.charAt(0).toUpperCase() + transcript.slice(1))
+          : transcript.charAt(0).toUpperCase() + transcript.slice(1)
       );
     }
 
@@ -228,6 +234,8 @@ function Gender() {
 
       default:
     }
+
+    // console.log("transcript",transcript)
   }, [transcript]);
 
   // useEffect(() => {
@@ -248,7 +256,7 @@ function Gender() {
             <Mic
               handleCloseMic={handleCloseMic}
               inputValue={inputValue}
-              transcript={transcript.replace(/\s/g, "")}
+              transcript={transcript}
               dots={dots}
             />
           ) : (
@@ -303,7 +311,7 @@ function Gender() {
                             //     val.name.slice(1)
                             // );
                             setFlag(true);
-                            registerFlow(val.name, nextContext)
+                            registerFlow(val.name, nextContext);
                           }}
                         >
                           {val.name}
@@ -400,7 +408,7 @@ function Gender() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: "IBM Plex Sans Devanagari",
+                      fontFamily: "IBM Plex Sans Devanagari ",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -416,7 +424,7 @@ function Gender() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -508,7 +516,7 @@ function Gender() {
                                 //     val.name.slice(1)
                                 // );
                                 setFlag(true);
-                                registerFlow(val.name, nextContext)
+                                registerFlow(val.name, nextContext);
                               }}
                             >
                               {val.name}

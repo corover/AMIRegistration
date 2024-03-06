@@ -10,6 +10,7 @@ export const CITY_VIEW = "CITY_VIEW";
 export const PINCODE_VIEW = "PINCODE_VIEW";
 export const RESET_PROFILE = "RESET_PROFILE";
 export const AREA_OF_INTREST = "AREA_OF_INTREST";
+export const LOCATION_VIEW = " LOCATION_VIEW ";
 
 export const language_view = (value: any) => ({
   type: LANGUAGE_VIEW,
@@ -63,6 +64,11 @@ export const pincode_view = (value: any) => ({
 
 export const area_Intrest = (value: any) => ({
   type: AREA_OF_INTREST,
+  payload: value,
+});
+
+export const location_View = (value: any) => ({
+  type: LOCATION_VIEW,
   payload: value,
 });
 

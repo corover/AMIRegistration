@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  font-style: "IBM Plex Sans Devanagari";
+  /* font-style: 'IBM Plex Sans Devanagari '; */
 }
 
 .App-logo {
@@ -14,6 +14,10 @@
   }
 }
 
+
+/* body,button,Button{
+  font-family: 'IBM Plex Sans Devanagari ';
+} */
 
 
 .App-link {

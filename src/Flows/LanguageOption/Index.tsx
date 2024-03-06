@@ -15,7 +15,7 @@ import {
   languageList,
   languageListEnglish,
 } from "../../utils/data";
-import { LanguageHeader } from "../../translation";
+import { LanguageHeader, audio } from "../../translation";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
 import { ContainerMic } from "../../UI/Style";
 import ListeningMic from "../../UI/Listening";
@@ -48,9 +48,8 @@ function LanguageSelection() {
     await registerFlow(lang, nextContext);
   };
   useEffect(() => {
-    const audio = new Audio("");
-
-    audio.play().catch((error) => {
+    const audioData = new Audio((audio as any)[selectedLanguage]?.langAudio);
+    audioData.play().catch((error) => {
       console.error("Error playing audio:", error);
     });
 
@@ -58,14 +57,14 @@ function LanguageSelection() {
       // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     };
 
-    audio.addEventListener("ended", handleAudioEnded);
+    audioData.addEventListener("ended", handleAudioEnded);
 
     return () => {
-      if (!audio.paused) {
-        audio.pause();
+      if (!audioData.paused) {
+        audioData.pause();
       }
-      audio.currentTime = 0;
-      audio.removeEventListener("ended", handleAudioEnded);
+      audioData.currentTime = 0;
+      audioData.removeEventListener("ended", handleAudioEnded);
     };
   }, []);
 
@@ -82,9 +81,6 @@ function LanguageSelection() {
       handleLanguageChange(val);
     }
   }, [transcript]);
-
-  
-  
 
   return (
     <div style={{ height: "fit-content" }}>
@@ -103,7 +99,7 @@ function LanguageSelection() {
             justifyContent: "center",
             // maxHeight: "60vh",
             padding: "0px 20px ",
-            marginTop:"15px"
+            marginTop: "15px",
           }}
         >
           {languageList &&
@@ -126,7 +122,6 @@ function LanguageSelection() {
             right: 0,
           }}
         >
-          
           {!listening ? (
             <>
               <div
@@ -140,7 +135,7 @@ function LanguageSelection() {
                 }}
               >
                 <img
-                  onClick={() =>      
+                  onClick={() =>
                     isSpeechRecognitionSupported()
                       ? startRecognition()
                       : requestPermission()
@@ -161,7 +156,7 @@ function LanguageSelection() {
                   // disabled={selectedOptions.length < 3 ? true : false}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                     fontFamily: 'IBM Plex Sans Devanagari',
                     width: "fit-content",
                     borderRadius: "8px",
                     backgroundColor: "#91278F",

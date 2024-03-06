@@ -95,7 +95,7 @@ function Name() {
         setCheckValue(true);
         handleCloseMic();
       }
-    }, 1800);
+  },1500);
 
     const value_ = setTimeout(() => {
       if (tryAgain && transcript.length > 0) {
@@ -103,7 +103,7 @@ function Name() {
         setCheckValue(false);
         handleCloseMic();
       }
-    }, 2200);
+  },1800);
 
     return () => {
       clearTimeout(value);
@@ -309,7 +309,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -324,7 +324,7 @@ function Name() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -363,7 +363,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

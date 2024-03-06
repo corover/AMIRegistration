@@ -35,43 +35,46 @@ export const OpentionsNotFound = {
 
 export const FlowHeaders = {
   en: {
-    name: "Tell your name ",
-    mobile: "Tell your mobile number",
-    dob: "Tell your date of birth ",
+    name: "Tell me your name",
+    mobile: "Tell me your mobile number",
+    dob: "Tell me your date of birth",
     otp: "Enter your OTP",
-    gender: "Tell your gender",
-    state: "Enter your state",
-    city: "Enter your city",
-    pincode: "Enter your pincode",
-    district: "Enter your district",
+    gender: "Are you a male or female",
+    state: "Tell me your state",
+    city: "Tell me your city",
+    pincode: "Tell me  your pincode",
+    district: "Tell me your district",
     reg: "Registration",
-    intrest: "Select your Area of Interest",
-    correct: "Is this correct ?",
+    intrest: "Tell me your area of interest",
+    correct: "Is this correct?",
     tryAgain: "Try again",
     yes: "Yes",
     no: "No",
     submit: "Submit",
-    errOpts: "Selected option is not in options ",
+    errOpts: "Selected value is not in options",
     errDate: "Enter valid date",
     block: "Blocked",
     blockMssg: "User Profile has been  blocked",
     profileExist: "User Profile Exists",
     profileExistMssg: "Page will be redirected to the application",
-    complete: " You have been registered successfully",
+    complete: "You have been registered successfully",
     optWrong: "The OTP entered is incorrect",
     enter: "Enter",
     skip: "Skip",
+    allowLocation: "Please enable location access",
+    allow: "Allow",
+    deny: "Deny",
   },
   hi: {
-    name: "तुम्हारा नाम क्या है ?",
+    name: "अपना नाम बताइये",
     state: "अपना राज्य दर्ज करें",
-    dob:"अपनी जन्मतिथि बताओ    ",
+    dob: "अपनी जन्मतिथि बताओ",
     city: "अपना शहर दर्ज करें",
     pincode: "अपना पिनकोड दर्ज करें",
     intrest: "अपनी रुचि का क्षेत्र चुनें",
     district: "अपना जिला दर्ज करें",
     mobile: "अपना मोबाइल संख्या दर्ज करे",
-    errOpts: "चयनित विकल्प विकल्पों में नहीं है ",
+    errOpts: "चयनित मान विकल्पों में नहीं है",
     otp: "अपना ओटीपी दर्ज करें",
     gender: "अपना लिंग चुनें",
     reg: "रजिस्ट्रेशन",
@@ -89,6 +92,9 @@ export const FlowHeaders = {
     optWrong: "दर्ज किया गया OTP गलत है",
     enter: "दर्ज करें",
     skip: "छोड़ें",
+    allowLocation: "कृपया स्थान पहुंच सक्षम करें",
+    allow: "अनुमति दें",
+    deny: "अस्वीकार करें",
   },
 };
 
@@ -96,9 +102,14 @@ export const audio = {
   en: {
     itsCorrect:
       "https://storage.googleapis.com/ami-tts-storage/f9d1f0e5-dbdc-4a36-849f-75341ceddd4e.wav",
+
+    langAudio:
+      "https://storage.googleapis.com/ami-tts-storage/4fc3bf6b-a26d-41ea-be28-0342afe2ff15.wav ",
   },
   hi: {
     itsCorrect:
       "https://storage.googleapis.com/ami-tts-storage/a751bf07-9674-458e-9c61-4e5a50647c6d.wav",
+    langAudio:
+      "https://storage.googleapis.com/ami-tts-storage/9bb2aad3-1dd6-49e8-8436-d53b331c5743.wav ",
   },
 };

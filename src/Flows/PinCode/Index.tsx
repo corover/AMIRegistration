@@ -52,7 +52,7 @@ function PinCode() {
   } = useSpeechRecognitionHook();
 
   const handleInputChange = (event: any) => {
-    setPinCode(event.target.value);
+    // setPinCode(event.target.value);
 
     setTranscriptState(event.target.value);
     setInputValue(event.target.value);
@@ -76,12 +76,12 @@ function PinCode() {
 
   const handleSubmit = async () => {
     stopRecognition();
-    await registerFlow(flowComplete, nextContext);
+    await registerFlow(transcriptState, nextContext);
   };
 
   const skipPinCode = async () => {
     setTimeout(async () => {
-      await registerFlow(flowComplete, nextContext);
+      await registerFlow(transcriptState, nextContext);
     }, 1000);
   };
 
@@ -147,7 +147,7 @@ function PinCode() {
       setTranscriptState("");
       resetTranscript();
     };
-  }, apiData.audio);
+  }, [apiData.audio]);
 
   useEffect(() => {
     let timmer: any;
@@ -181,7 +181,7 @@ function PinCode() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      transcript.length > 0 && setPinCode(transcript.replace(/\s/g, ""));
+      // transcript.length > 0 && setPinCode(transcript.replace(/\s/g, ""));
       setTranscriptState(transcript.replace(/\s/g, ""));
       setInputValue(transcript.replace(/\s/g, ""));
     }
@@ -285,7 +285,7 @@ function PinCode() {
                 variant="contained"
                 startIcon={<CheckCircleSharp />}
                 style={{
-                  fontFamily: "IBM Plex Sans Devanagari",
+                  fontFamily: 'IBM Plex Sans Devanagari ',
                   width: "100%",
                   borderRadius: "8px",
                   marginBottom: "10px",
@@ -300,7 +300,7 @@ function PinCode() {
                 variant="contained"
                 startIcon={<Cancel />}
                 style={{
-                  fontFamily: "IBM Plex Sans Devanagari",
+                  fontFamily: 'IBM Plex Sans Devanagari ',
                   width: "100%",
                   borderRadius: "8px",
                   marginBottom: "10px",
@@ -390,7 +390,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -405,7 +405,7 @@ function PinCode() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -457,7 +457,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

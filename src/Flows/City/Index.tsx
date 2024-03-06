@@ -31,11 +31,11 @@ import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 const btnStyle = {
-  backgroundColor: "#ededed",
+  backgroundColor: "white",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
-  border: "3px solid #F0D9F0"
+  border: "1px solid #F0D9F0"
 };
 
 function City() {
@@ -189,7 +189,7 @@ function City() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+  },1500);
 
     return () => {
       clearTimeout(timeoutId);
@@ -385,7 +385,7 @@ function City() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: 'IBM Plex Sans Devanagari ',
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -402,7 +402,7 @@ function City() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",

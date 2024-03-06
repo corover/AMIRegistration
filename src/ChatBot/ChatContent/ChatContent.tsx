@@ -22,6 +22,7 @@ import City from "../../Flows/City/Index";
 import AreaOfIntrest from "../../Flows/AreaOfIntrest/Index";
 import FlowComplete from "../../Flows/FlowComplete/Index";
 import PinCode from "../../Flows/PinCode/Index";
+import LocationAccess from "../../Flows/Location";
 
 function ChatContent() {
   const {
@@ -36,11 +37,13 @@ function ChatContent() {
     cityView,
     pincodeView,
     areaOfIntrest,
+    locationView,
   } = useSelector(flowReducer);
   const { loading, bgColor } = useSelector(reducer);
   const { apiData, isBlocked, hasProfile, isNewUser, enableLocation } =
     useSelector(apiSelector);
-  // console.log("enableLocation", enableLocation);
+ 
+
   const renderComponent = () => {
     switch (true) {
       case loading:
@@ -57,6 +60,8 @@ function ChatContent() {
         return <ExistUser />;
       case nameView && isNewUser:
         return <Name />;
+      case locationView &&isNewUser:
+        return <LocationAccess />;
       case genderView:
         return <Gender />;
       case dobView:
@@ -65,8 +70,8 @@ function ChatContent() {
         return <State />;
       case !enableLocation && districtView:
         return <District />;
-      case !enableLocation && cityView:
-        return <City />;
+      // case !enableLocation && cityView:
+      //   return <City />;
       case !enableLocation && pincodeView:
         return <PinCode />;
       case areaOfIntrest:

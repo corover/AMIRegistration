@@ -208,3 +208,27 @@ export const filterValue = (value: string | number) => {
     ? value.replace(/[^a-zA-Z0-9\s]|\.+$/g, "")
     : String(value).replace(/[^a-zA-Z0-9\s]|\.+$/g, "");
 };
+
+export const getGender = (word: string): string => {
+  const genderMapping: { [key: string]: string } = {
+    boy: "Male",
+    girl: "Female",
+    men: "Male",
+    man: "Male",
+    mail: "Male",
+    women: "Female",
+    woman: "Female",
+    guy: "Male",
+    guys: "Male",
+    ma: "Male",
+    "male ma": "Male",
+    "male male": "Male",
+    "male male male": "Male",
+    lady: "Female",
+    "dont wish to specify": "Don't Wish to Specify",
+    "dont wish to": "Don't Wish to Specify",
+  };
+
+  const lowerCaseWord = word.toLowerCase();
+  return genderMapping[lowerCaseWord] || "";
+};

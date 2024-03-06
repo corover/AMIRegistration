@@ -21,7 +21,7 @@ function useSpeechRecognitionHook() {
     registerFlow(blob, nextContext);
   });
 
-  if (stateView || districtView || cityView || areaOfIntrest ) {
+  if (stateView || districtView  || areaOfIntrest ) {
     selectedLanguage_ = selectedLanguage;
   } else {
     selectedLanguage_ = "en";

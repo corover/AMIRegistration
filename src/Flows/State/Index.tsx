@@ -31,11 +31,11 @@ import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 const btnStyle = {
-  backgroundColor: "#ededed",
+  backgroundColor: "white",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
-  border: "3px solid #F0D9F0"
+  border: "1px solid #F0D9F0"
 };
 
 function State() {
@@ -63,7 +63,7 @@ function State() {
     listening,
     resetTranscript,
   } = useSpeechRecognitionHook();
-console.log(111)
+
   const getLabelFromValue = (value: any) => {
     const date =
       apiData &&
@@ -411,7 +411,7 @@ console.log(111)
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: "IBM Plex Sans Devanagari",
+                      fontFamily: 'IBM Plex Sans Devanagari ',
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -427,7 +427,7 @@ console.log(111)
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: "IBM Plex Sans Devanagari",
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
