@@ -15,7 +15,6 @@ export const userToken = sessionStorage.getItem("ami-userToken");
 let accessToken: string | null = "";
 
 export const registerFlow = async (apiBody: any, nextContext: any) => {
-  // accessToken = sessionStorage.getItem("ami-accessToken");
   setLoading(true);
 
   const url = `amiAPI/log/login`;
@@ -35,7 +34,6 @@ export const registerFlow = async (apiBody: any, nextContext: any) => {
     })
     .then((response) => {
       if (response.data && response.data.next_context.length > 0) {
-        // setNextContext(response.data);
         setTimeout(() => {
           setLoading(false);
           setNextContext(response.data);
@@ -51,7 +49,6 @@ export const registerFlow = async (apiBody: any, nextContext: any) => {
         setCity(response.data.location.district);
         setState(response.data.location.stateId);
       }
-      // setLoading(true);
       return response.data;
     })
     .catch((error) => {

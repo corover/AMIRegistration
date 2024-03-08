@@ -160,7 +160,7 @@ body {
   margin-bottom: 8px;
   text-align: center;
   font-size: 24px;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .optionItem {
@@ -529,7 +529,7 @@ hr {
   transition: background-color 0.3s;
 }
 .inputSchemes {
-  font-family: 'IBM Plex Sans Devanagari ';
+  /* font-family: 'IBM Plex Sans Devanagari '; */
   border: none;
   height: 42px;
   font-size: 18px;

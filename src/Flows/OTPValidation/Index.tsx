@@ -16,7 +16,13 @@ import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL, filterValue } from "../../utils/data";
+import {
+  isResponse,
+  playAudioURL,
+  filterValue,
+  playAudio,
+  playAudioCallBack,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
@@ -56,12 +62,22 @@ function OTPValidation() {
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    if (!optWorng) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.otpErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -356,7 +372,7 @@ function OTPValidation() {
                   disabled={optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -371,7 +387,7 @@ function OTPValidation() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -425,7 +441,7 @@ function OTPValidation() {
                   disabled={optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

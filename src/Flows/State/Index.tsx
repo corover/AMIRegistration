@@ -25,7 +25,13 @@ import { userProfileState } from "../../store/Redux-selector/Selector";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { setDistrict } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { filterValue, isResponse, playAudioURL } from "../../utils/data";
+import {
+  filterValue,
+  isResponse,
+  playAudio,
+  playAudioCallBack,
+  playAudioURL,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
@@ -35,7 +41,7 @@ const btnStyle = {
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
-  border: "1px solid #F0D9F0"
+  border: "1px solid #F0D9F0",
 };
 
 function State() {
@@ -50,10 +56,162 @@ function State() {
   const [invalid, SetInvalid] = useState(false);
   const [check, setCheck] = useState(true);
   const [transcriptState, setTranscriptState] = useState("");
-
+  const [retryMic, setRetryMic] = useState(false);
   const { nextContext, apiData } = useSelector(apiSelector);
   const { selectedLanguage } = useSelector(reducer);
 
+  // const apiData = {
+  //   status: "success",
+  //   next_context: "709a143c-93b5-4211-a789-61123b3e3a3c",
+  //   audio:
+  //     "https://storage.googleapis.com/ami-tts-storage/c2c1c717-14b1-4d7b-b3c5-94aca371ccba.wav",
+  //   states: [
+  //     {
+  //       id: 2,
+  //       name: "Andaman Nicobar",
+  //     },
+  //     {
+  //       id: 3,
+  //       name: "Andhra Pradesh",
+  //     },
+  //     {
+  //       id: 4,
+  //       name: "Arunachal Pradesh",
+  //     },
+  //     {
+  //       id: 5,
+  //       name: "Assam",
+  //     },
+  //     {
+  //       id: 6,
+  //       name: "Bihar",
+  //     },
+  //     {
+  //       id: 7,
+  //       name: "Chandigarh",
+  //     },
+  //     {
+  //       id: 8,
+  //       name: "Chhattisgarh",
+  //     },
+  //     {
+  //       id: 9,
+  //       name: "Dadra And Nagar Haveli And Daman And Diu",
+  //     },
+  //     {
+  //       id: 10,
+  //       name: "Delhi",
+  //     },
+  //     {
+  //       id: 11,
+  //       name: "Goa",
+  //     },
+  //     {
+  //       id: 12,
+  //       name: "Gujarat",
+  //     },
+  //     {
+  //       id: 13,
+  //       name: "Haryana",
+  //     },
+  //     {
+  //       id: 14,
+  //       name: "Himachal Pradesh",
+  //     },
+  //     {
+  //       id: 15,
+  //       name: "Jammu Kashmir",
+  //     },
+  //     {
+  //       id: 16,
+  //       name: "Jharkhand",
+  //     },
+  //     {
+  //       id: 17,
+  //       name: "Karnataka",
+  //     },
+  //     {
+  //       id: 18,
+  //       name: "Kerala",
+  //     },
+  //     {
+  //       id: 19,
+  //       name: "Ladakh",
+  //     },
+  //     {
+  //       id: 20,
+  //       name: "Lakshadweep",
+  //     },
+  //     {
+  //       id: 21,
+  //       name: "Madhya Pradesh",
+  //     },
+  //     {
+  //       id: 22,
+  //       name: "Maharashtra",
+  //     },
+  //     {
+  //       id: 23,
+  //       name: "Manipur",
+  //     },
+  //     {
+  //       id: 24,
+  //       name: "Meghalaya",
+  //     },
+  //     {
+  //       id: 25,
+  //       name: "Mizoram",
+  //     },
+  //     {
+  //       id: 26,
+  //       name: "Nagaland",
+  //     },
+  //     {
+  //       id: 27,
+  //       name: "Odisha",
+  //     },
+  //     {
+  //       id: 28,
+  //       name: "Puducherry",
+  //     },
+  //     {
+  //       id: 29,
+  //       name: "Punjab",
+  //     },
+  //     {
+  //       id: 30,
+  //       name: "Rajasthan",
+  //     },
+  //     {
+  //       id: 31,
+  //       name: "Sikkim",
+  //     },
+  //     {
+  //       id: 32,
+  //       name: "Tamil Nadu",
+  //     },
+  //     {
+  //       id: 33,
+  //       name: "Telangana",
+  //     },
+  //     {
+  //       id: 34,
+  //       name: "Tripura",
+  //     },
+  //     {
+  //       id: 35,
+  //       name: "Uttar Pradesh",
+  //     },
+  //     {
+  //       id: 36,
+  //       name: "Uttarakhand",
+  //     },
+  //     {
+  //       id: 37,
+  //       name: "West Bengal",
+  //     },
+  //   ],
+  // };
   const {
     transcript,
     startRecognition,
@@ -75,12 +233,23 @@ function State() {
 
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    // setCheckMic(true);
+    if (!invalid) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.optionsErr,handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -129,7 +298,10 @@ function State() {
     );
   const handleNo = () => {
     stopRecognition();
-    setTryAgain(true);
+    // setTryAgain(true);
+    // setCheckValue(false);
+
+    setAskValue(true);
     setCheckValue(false);
   };
 
@@ -138,6 +310,7 @@ function State() {
       if (askValue && transcriptState.length > 0) {
         setAskValue(false);
         setCheckValue(true);
+        // setSearchTerm(transcriptState);
       }
     }, 1800);
 
@@ -175,7 +348,12 @@ function State() {
 
   useEffect(() => {
     playAudioURL(
-      [apiData && apiData.audio],
+      [
+        selectedLanguage === "en"
+          ? "https://storage.googleapis.com/ami-tts-storage/428b4643-5354-4cbd-a1d0-3e2c76652ed5.wav"
+          : "https://storage.googleapis.com/ami-tts-storage/c39856bc-bac3-4c86-a260-4b2093594dfd.wav",
+        apiData && apiData.audio,
+      ],
       isSpeechRecognitionSupported,
       startRecognition,
       requestPermission
@@ -191,6 +369,17 @@ function State() {
       stopRecognition();
       setTranscriptState("");
       resetTranscript();
+      playAudioURL(
+        [
+          selectedLanguage === "en"
+            ? "https://storage.googleapis.com/ami-tts-storage/428b4643-5354-4cbd-a1d0-3e2c76652ed5.wav"
+            : "https://storage.googleapis.com/ami-tts-storage/c39856bc-bac3-4c86-a260-4b2093594dfd.wav",
+          apiData && apiData.audio,
+        ],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      ).pauseOrStopAudio(true);
     };
   }, []);
 
@@ -224,10 +413,12 @@ function State() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState((transcript));
-      setInputValue((transcript));
+      setTranscriptState(transcript);
+      setInputValue(transcript);
     }
-
+    if (retryMic) {
+      setSearchTerm(transcript);
+    }
     let response = isResponse(transcript, selectedLanguage);
     switch (response) {
       case "positive":
@@ -315,6 +506,17 @@ function State() {
                             setInputValue(val.id);
                             registerFlow(val.id, nextContext);
                             setCheck(false);
+                            playAudioURL(
+                              [
+                                selectedLanguage === "en"
+                                  ? "https://storage.googleapis.com/ami-tts-storage/428b4643-5354-4cbd-a1d0-3e2c76652ed5.wav"
+                                  : "https://storage.googleapis.com/ami-tts-storage/c39856bc-bac3-4c86-a260-4b2093594dfd.wav",
+                                apiData && apiData.audio,
+                              ],
+                              isSpeechRecognitionSupported,
+                              startRecognition,
+                              requestPermission
+                            ).pauseOrStopAudio(true);
                           }}
                         >
                           {val.name}
@@ -411,7 +613,7 @@ function State() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari ',
+                      fontFamily: "IBM Plex Sans Devanagari ",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -427,7 +629,7 @@ function State() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -489,10 +691,15 @@ function State() {
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
 
-                        {/* <IconButton
+                        <IconButton
                           size="small"
                           style={btnStyle}
-                          onClick={handleClick}
+                          onClick={() => {
+                            isSpeechRecognitionSupported()
+                              ? startRecognition()
+                              : requestPermission();
+                            setRetryMic(true);
+                          }}
                         >
                           <span>
                             <KeyboardVoiceOutlined
@@ -502,7 +709,7 @@ function State() {
                               }}
                             />
                           </span>
-                        </IconButton> */}
+                        </IconButton>
                       </>
                     </div>
 
@@ -518,6 +725,17 @@ function State() {
                                 setInputValue(val.id);
                                 registerFlow(val.id, nextContext);
                                 setCheck(false);
+                                playAudioURL(
+                                  [
+                                    selectedLanguage === "en"
+                                      ? "https://storage.googleapis.com/ami-tts-storage/428b4643-5354-4cbd-a1d0-3e2c76652ed5.wav"
+                                      : "https://storage.googleapis.com/ami-tts-storage/c39856bc-bac3-4c86-a260-4b2093594dfd.wav",
+                                    apiData && apiData.audio,
+                                  ],
+                                  isSpeechRecognitionSupported,
+                                  startRecognition,
+                                  requestPermission
+                                ).pauseOrStopAudio(true);
                               }}
                             >
                               {val.name}

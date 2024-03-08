@@ -49,7 +49,7 @@ function ChatContent() {
       case loading:
         return <LoadingComponent />;
       case languageView:
-        return <LanguageSelection />;
+        return  <LanguageSelection />;
       case mobileNoView:
         return <MobileNumber />;
       case generateOtpView:

@@ -16,7 +16,13 @@ import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { filterValue, isResponse, playAudioURL } from "../../utils/data";
+import {
+  filterValue,
+  isResponse,
+  playAudio,
+  playAudioCallBack,
+  playAudioURL,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
@@ -55,12 +61,22 @@ function MobileNumber() {
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    if (error) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.mobileErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -86,7 +102,7 @@ function MobileNumber() {
         setCheckValue(true);
         handleCloseMic();
       }
-  },1500);
+    }, 1500);
 
     const value_ = setTimeout(() => {
       if (tryAgain && transcript.length > 0) {
@@ -94,7 +110,7 @@ function MobileNumber() {
         setCheckValue(false);
         handleCloseMic();
       }
-  },1800);
+    }, 1800);
 
     return () => {
       clearTimeout(value);
@@ -177,6 +193,7 @@ function MobileNumber() {
   useEffect(() => {
     if (inputValue.length === 10 && /^[0-9]+$/.test(inputValue)) {
       setError(true);
+      //erroraudio:1
     } else {
       setError(false);
       setErrorState(
@@ -320,7 +337,7 @@ function MobileNumber() {
                   disabled={!error}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -335,7 +352,7 @@ function MobileNumber() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -387,7 +404,7 @@ function MobileNumber() {
                   disabled={!error}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

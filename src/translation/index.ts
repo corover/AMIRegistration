@@ -105,11 +105,33 @@ export const audio = {
 
     langAudio:
       "https://storage.googleapis.com/ami-tts-storage/4fc3bf6b-a26d-41ea-be28-0342afe2ff15.wav ",
+
+    mobileErr:
+      "https://storage.googleapis.com/ami-tts-storage/09fc9991-856d-4977-bdad-7c2f259bbd05.wav",
+    otpErr:
+      "https://storage.googleapis.com/ami-tts-storage/9352cff5-4b9f-47b7-8dc7-107464e10eca.wav",
+    optionsErr:
+      "https://storage.googleapis.com/ami-tts-storage/355ea576-4d36-4d71-a284-8ec6d9efbef3.wav",
+    dateErr:
+      "https://storage.googleapis.com/ami-tts-storage/d8909518-3364-4937-ba34-5e4e43aa8aed.wav",
+    pinCodeErr:
+      "https://storage.googleapis.com/ami-tts-storage/d1779140-420f-4ab6-bc86-0332d35dca4c.wav ",
   },
   hi: {
     itsCorrect:
       "https://storage.googleapis.com/ami-tts-storage/a751bf07-9674-458e-9c61-4e5a50647c6d.wav",
     langAudio:
       "https://storage.googleapis.com/ami-tts-storage/9bb2aad3-1dd6-49e8-8436-d53b331c5743.wav ",
+
+    mobileErr:
+      "https://storage.googleapis.com/ami-tts-storage/0a78ab7d-c8de-4ef2-a5a8-f01f433e3a47.wav",
+    otpErr:
+      "https://storage.googleapis.com/ami-tts-storage/1ba9069d-8f02-4831-8816-284150195971.wav",
+    optionsErr:
+      "https://storage.googleapis.com/ami-tts-storage/c47c4026-04ff-4c54-a423-cd89af00e04c.wav",
+    dateErr:
+      "https://storage.googleapis.com/ami-tts-storage/8b918e8b-651d-471a-9a1f-745515ff151c.wav",
+      pinCodeErr:
+      "https://storage.googleapis.com/ami-tts-storage/6b6a0a5d-5437-412b-bdb8-0b28eeaced1a.wav ",
   },
 };

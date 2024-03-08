@@ -16,7 +16,13 @@ import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL, getFrequentVoice } from "../../utils/data";
+import {
+  isResponse,
+  playAudioURL,
+  getFrequentVoice,
+  playAudio,
+  playAudioCallBack,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
@@ -61,12 +67,22 @@ function PinCode() {
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    if (!optWorng) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.pinCodeErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -125,12 +141,7 @@ function PinCode() {
 
   useEffect(() => {
     playAudioURL(
-      [
-        selectedLanguage === "en"
-          ? "https://storage.googleapis.com/ami-tts-storage/428b4643-5354-4cbd-a1d0-3e2c76652ed5.wav"
-          : "https://storage.googleapis.com/ami-tts-storage/c39856bc-bac3-4c86-a260-4b2093594dfd.wav",
-        apiData.audio,
-      ],
+      [apiData.audio],
       isSpeechRecognitionSupported,
       startRecognition,
       requestPermission
@@ -146,6 +157,12 @@ function PinCode() {
       stopRecognition();
       setTranscriptState("");
       resetTranscript();
+      playAudioURL(
+        [apiData.audio],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      ).pauseOrStopAudio(true);
     };
   }, [apiData.audio]);
 
@@ -285,7 +302,7 @@ function PinCode() {
                 variant="contained"
                 startIcon={<CheckCircleSharp />}
                 style={{
-                  fontFamily: 'IBM Plex Sans Devanagari ',
+                  fontFamily: "IBM Plex Sans Devanagari ",
                   width: "100%",
                   borderRadius: "8px",
                   marginBottom: "10px",
@@ -300,7 +317,7 @@ function PinCode() {
                 variant="contained"
                 startIcon={<Cancel />}
                 style={{
-                  fontFamily: 'IBM Plex Sans Devanagari ',
+                  fontFamily: "IBM Plex Sans Devanagari ",
                   width: "100%",
                   borderRadius: "8px",
                   marginBottom: "10px",
@@ -390,7 +407,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -405,7 +422,7 @@ function PinCode() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -457,7 +474,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

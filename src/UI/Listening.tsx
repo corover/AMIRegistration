@@ -8,8 +8,22 @@ import {
 
 import { useSelector } from "react-redux";
 import { flowReducer } from "../store/Redux-selector/Selector";
+import { playAudio } from "../utils/data";
 function ListeningMic() {
   const { languageView } = useSelector(flowReducer);
+
+  React.useEffect(() => {
+    playAudio(
+      "https://coroverbackendstorage.blob.core.windows.net/chatbot-audio-bucket/start.mp3"
+    );
+
+    return () => {
+      playAudio(
+        "https://coroverbackendstorage.blob.core.windows.net/chatbot-audio-bucket/caught.mp3"
+      );
+    };
+  }, []);
+
   return (
     <div
       style={{

@@ -3,19 +3,16 @@ import { ContainerVoice } from "../../UI/Style";
 import { useSelector } from "react-redux";
 import { apiSelector, reducer } from "../../store/Redux-selector/Selector";
 import { FlowHeaders } from "../../translation";
+import { playAudio } from "../../utils/data";
 
 function BlockedUser() {
   const apiData = useSelector(apiSelector).apiData;
-  const {selectedLanguage} = useSelector(reducer);
+  const { selectedLanguage } = useSelector(reducer);
 
   React.useEffect(() => {
-    const audio = new Audio(apiData && apiData.audio);
-
-    audio.play().catch((error) => {
-      console.error("Error playing audio:", error);
-    });
+    playAudio(apiData && apiData.audio);
   }, []);
-  // console.log(selectedLanguage)
+  
   return (
     <ContainerVoice className={"ContainerVoice"}>
       <div

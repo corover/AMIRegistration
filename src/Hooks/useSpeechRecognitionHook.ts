@@ -9,10 +9,17 @@ import { apiSelector } from "../store/Redux-selector/Selector";
 import { lang } from "../store/Redux-selector/Selector";
 import { reducer } from "../store/Redux-selector/Selector";
 import { flowReducer } from "../store/Redux-selector/Selector";
+import { playAudio } from "../utils/data";
 
 function useSpeechRecognitionHook() {
-  const { stateView, districtView, cityView, areaOfIntrest, genderView } =
-    useSelector(flowReducer);
+  const {
+    stateView,
+    districtView,
+    cityView,
+    areaOfIntrest,
+    genderView,
+    nameView,
+  } = useSelector(flowReducer);
   const { selectedLanguage, checkMic } = useSelector(reducer);
   let selectedLanguage_ = selectedLanguage;
   const nextContext = useSelector(apiSelector).nextContext;
@@ -21,13 +28,14 @@ function useSpeechRecognitionHook() {
     registerFlow(blob, nextContext);
   });
 
-  if (stateView || districtView  || areaOfIntrest ) {
+  if (stateView || districtView || areaOfIntrest || genderView || nameView) {
     selectedLanguage_ = selectedLanguage;
   } else {
     selectedLanguage_ = "en";
   }
 
   const startRecognition = () => {
+    
     SpeechRecognition.startListening({
       continuous: false,
       language: isIOS() ? `en-US` : `${selectedLanguage_}-IN`,
@@ -36,6 +44,7 @@ function useSpeechRecognitionHook() {
   };
 
   const stopRecognition = () => {
+   
     SpeechRecognition.stopListening();
     isIOS() && recorder.saveRecording();
   };

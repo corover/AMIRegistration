@@ -25,7 +25,13 @@ import { userProfileState } from "../../store/Redux-selector/Selector";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { setDistrict } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { filterValue, isResponse, playAudioURL } from "../../utils/data";
+import {
+  filterValue,
+  isResponse,
+  playAudio,
+  playAudioCallBack,
+  playAudioURL,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
@@ -35,7 +41,7 @@ const btnStyle = {
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
-  border: "1px solid #F0D9F0"
+  border: "1px solid #F0D9F0",
 };
 
 function District() {
@@ -74,12 +80,23 @@ function District() {
 
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    // setCheckMic(true);
+    if (!invalid) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.optionsErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -102,7 +119,9 @@ function District() {
     );
   const handleNo = () => {
     stopRecognition();
-    setTryAgain(true);
+    // setTryAgain(true);
+    // setCheckValue(false);
+    setAskValue(true);
     setCheckValue(false);
   };
 
@@ -183,7 +202,7 @@ function District() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-  },1500);
+    }, 1500);
 
     return () => {
       clearTimeout(timeoutId);
@@ -192,13 +211,12 @@ function District() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-   
       // if(selectedLanguage==="hi"){
-   setTranscriptState((transcript));
-      setInputValue((transcript));
+      setTranscriptState(transcript);
+      setInputValue(transcript);
       // }
     }
-console.log(transcript)
+    console.log(transcript);
     let response = isResponse(transcript, selectedLanguage);
     switch (response) {
       case "positive":
@@ -384,7 +402,7 @@ console.log(transcript)
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari ',
+                      fontFamily: "IBM Plex Sans Devanagari ",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -400,7 +418,7 @@ console.log(transcript)
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",

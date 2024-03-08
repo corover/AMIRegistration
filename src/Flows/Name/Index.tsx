@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
 import { setName_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
-import {  registerFlow } from "../../Apis";
+import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
@@ -95,7 +95,7 @@ function Name() {
         setCheckValue(true);
         handleCloseMic();
       }
-  },1500);
+    }, 1500);
 
     const value_ = setTimeout(() => {
       if (tryAgain && transcript.length > 0) {
@@ -103,7 +103,7 @@ function Name() {
         setCheckValue(false);
         handleCloseMic();
       }
-  },1800);
+    }, 1800);
 
     return () => {
       clearTimeout(value);
@@ -114,7 +114,12 @@ function Name() {
 
   useEffect(() => {
     playAudioURL(
-      [apiData && apiData.audio],
+      [
+        selectedLanguage === "en"
+          ? "https://storage.googleapis.com/ami-tts-storage/837aff98-8275-4d1b-a7b9-a350b8d5d007.wav"
+          : "https://storage.googleapis.com/ami-tts-storage/d31f1cf2-bde3-4311-9cde-cab7cf97746d.wav",
+        apiData && apiData.audio,
+      ],
       isSpeechRecognitionSupported,
       startRecognition,
       requestPermission
@@ -133,6 +138,17 @@ function Name() {
       stopRecognition();
       setTranscriptState("");
       resetTranscript();
+      playAudioURL(
+        [
+          selectedLanguage === "en"
+            ? "https://storage.googleapis.com/ami-tts-storage/837aff98-8275-4d1b-a7b9-a350b8d5d007.wav"
+            : "https://storage.googleapis.com/ami-tts-storage/d31f1cf2-bde3-4311-9cde-cab7cf97746d.wav",
+          apiData && apiData.audio,
+        ],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      ).pauseOrStopAudio(true);
     };
   }, []);
 
@@ -168,8 +184,8 @@ function Name() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(filterValue(transcript));
-      setInputValue(filterValue(transcript));
+      setTranscriptState((transcript));
+      setInputValue((transcript));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -309,7 +325,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -324,7 +340,7 @@ function Name() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -363,7 +379,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari ',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",

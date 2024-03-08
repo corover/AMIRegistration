@@ -124,6 +124,50 @@ export function formatDateToYYYYMMDD(dateString: string): string | undefined {
   return moment(yyyymmdd).format("YYYY-MM-DD");
 }
 
+// export const playAudioURL = (
+//   audioURLs: string[],
+//   isSpeechRecognitionSupported: any,
+//   startRecognition: any,
+//   requestPermission: any
+// ) => {
+//   let currentAudioIndex = 0;
+//   const audios: HTMLAudioElement[] = audioURLs
+//     .filter((item) => item !== undefined && item !== null && item.length > 0)
+//     .map((url) => new Audio(url));
+
+//   const handleAudioEnded = () => {
+//     currentAudioIndex++;
+//     if (currentAudioIndex < audios.length) {
+//       playNextAudio();
+//     } else {
+//       // Perform actions when all audios finish playing
+//       isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
+//     }
+//   };
+
+//   const playNextAudio = () => {
+//     if (currentAudioIndex < audios.length) {
+//       const audio = audios[currentAudioIndex];
+//       audio.play().catch((error) => {
+//         console.error("Error playing audio:", error);
+//       });
+
+//       audio.addEventListener("ended", handleAudioEnded);
+//     }
+//   };
+
+//   playNextAudio();
+
+//   return () => {
+//     audios.forEach((audio) => {
+//       if (!audio.paused) {
+//         audio.pause();
+//       }
+//       audio.currentTime = 0;
+//       audio.removeEventListener("ended", handleAudioEnded);
+//     });
+//   };
+// };
 export const playAudioURL = (
   audioURLs: string[],
   isSpeechRecognitionSupported: any,
@@ -156,16 +200,23 @@ export const playAudioURL = (
     }
   };
 
+  const pauseOrStopAudio = (stop: boolean) => {
+    audios.forEach((audio, index) => {
+      if (index === currentAudioIndex) {
+        if (stop) {
+          audio.pause();
+          audio.currentTime = 0;
+        } else {
+          audio.pause();
+        }
+      }
+    });
+  };
+
   playNextAudio();
 
-  return () => {
-    audios.forEach((audio) => {
-      if (!audio.paused) {
-        audio.pause();
-      }
-      audio.currentTime = 0;
-      audio.removeEventListener("ended", handleAudioEnded);
-    });
+  return {
+    pauseOrStopAudio,
   };
 };
 
@@ -231,4 +282,41 @@ export const getGender = (word: string): string => {
 
   const lowerCaseWord = word.toLowerCase();
   return genderMapping[lowerCaseWord] || "";
+};
+
+export const playAudio = (audioUrl: string) => {
+  if (!audioUrl) return;
+
+  const audioElement = new Audio();
+
+  if (audioElement) {
+    audioElement.src = audioUrl;
+    audioElement.load();
+
+    audioElement.addEventListener("canplaythrough", () => {
+      audioElement.play();
+    });
+
+    audioElement.addEventListener("ended", () => {});
+  }
+};
+
+export const playAudioCallBack = (audioUrl: string, handleNo: () => void) => {
+  if (!audioUrl) return;
+
+  const audioElement = new Audio();
+
+  if (audioElement) {
+    audioElement.src = audioUrl;
+    audioElement.load();
+
+    audioElement.addEventListener("canplaythrough", () => {
+      audioElement.play();
+    });
+
+    audioElement.addEventListener("ended", () => {
+      // Call handleNo function when audio playback ends
+      handleNo();
+    });
+  }
 };

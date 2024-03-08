@@ -23,6 +23,8 @@ import {
   filterValue,
   formatDateToYYYYMMDD,
   isResponse,
+  playAudio,
+  playAudioCallBack,
   playAudioURL,
 } from "../../utils/data";
 import { audio } from "../../translation";
@@ -32,8 +34,10 @@ import Mic from "../../UI/Mic";
 import { getFrequentVoice } from "../../utils/data";
 import { setDOB } from "../../store/Redux-Dispatcher/UserDispatcher";
 function DateOfBirth() {
+  const flowComplete = useSelector(userProfileState);
+
   const { selectedLanguage } = useSelector(reducer);
-  const { mobileNoData } = useSelector(userProfileState);
+  const { mobileNoData, dobData } = useSelector(userProfileState);
   const [askValue, setAskValue] = useState(true);
   const [checkValue, setCheckValue] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
@@ -42,9 +46,8 @@ function DateOfBirth() {
   const nextContext = useSelector(apiSelector).nextContext;
   const [inputValue, setInputValue] = useState("");
   const [transcriptState, setTranscriptState] = useState("");
-
-  const { enableLocation,apiData } = useSelector(apiSelector);
-  const flowComplete = useSelector(userProfileState);
+  const [completeFlowState, setCompleteFlowState] = useState(flowComplete);
+  const { enableLocation, apiData } = useSelector(apiSelector);
 
   const [date, setDate] = useState("");
 
@@ -68,13 +71,18 @@ function DateOfBirth() {
   } = useSpeechRecognitionHook();
 
   const handleClick = () => {
+    // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    if (moment(inputValue).format("YYYY-MM-DD") === "Invalid date") {
+      playAudioCallBack((audio as any)[selectedLanguage]?.dateErr, handleNo);
+    } else {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    }
   };
 
   const handleCloseMic = () => {
@@ -86,9 +94,7 @@ function DateOfBirth() {
     // console.log(11);
     stopRecognition();
     if (moment(inputValue).format("YYYYMMDD") !== "Invalid date") {
-      // !enableLocation
-        // ? registerFlow(moment(inputValue).format("YYYY-MM-DD"), nextContext)
-         registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+      registerFlow(completeFlowState, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
     }
   };
 
@@ -96,6 +102,7 @@ function DateOfBirth() {
     stopRecognition();
     setTryAgain(true);
     setCheckValue(false);
+    setDOB("");
   };
 
   const handleDateChange = (selectedDate: any) => {
@@ -129,12 +136,7 @@ function DateOfBirth() {
   useEffect(() => {
     playAudioURL(
       //   audioURLArray,
-      [
-        selectedLanguage === "en"
-          ? "https://storage.googleapis.com/ami-tts-storage/837aff98-8275-4d1b-a7b9-a350b8d5d007.wav"
-          : "https://storage.googleapis.com/ami-tts-storage/d31f1cf2-bde3-4311-9cde-cab7cf97746d.wav",
-        apiData.audio,
-      ],
+      [apiData.audio],
       isSpeechRecognitionSupported,
       startRecognition,
       requestPermission
@@ -173,7 +175,7 @@ function DateOfBirth() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-  },1500);
+    }, 1500);
 
     return () => {
       clearTimeout(timeoutId);
@@ -182,9 +184,16 @@ function DateOfBirth() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState((transcript));
+      setTranscriptState(transcript);
       //  setInputValue(transcript);
-      const data = formatDateToYYYYMMDD(transcript);
+      const data = formatDateToYYYYMMDD(transcript)
+        ? formatDateToYYYYMMDD(transcript)
+        : transcript;
+      console.log(
+        formatDateToYYYYMMDD(transcript)
+          ? formatDateToYYYYMMDD(transcript)
+          : transcript
+      );
       data && setInputValue(filterValue(data));
       transcript.length > 0 && setDOB(data);
 
@@ -202,6 +211,10 @@ function DateOfBirth() {
       handleCloseMic();
     }
   }, [transcript]);
+
+  useEffect(() => {
+    setCompleteFlowState(flowComplete);
+  }, [dobData]);
 
   return (
     <div>
@@ -315,10 +328,13 @@ function DateOfBirth() {
                     color: "#91278F",
                   }}
                 >
-                  {transcriptState}
+                  {/* {transcriptState} */}
+                  {formatDateToYYYYMMDD(transcriptState)
+                    ? formatDateToYYYYMMDD(transcriptState)
+                    : transcriptState}
                 </span>
 
-                {moment(inputValue).format("YYYYMMDD") === "Invalid date" && (
+                {moment(inputValue).format("YYYY-MM-DD") === "Invalid date" && (
                   <p style={{ color: "#F15A59", fontSize: "15px" }}>
                     {(FlowHeaders as any)[selectedLanguage]?.errDate}
                   </p>
@@ -341,7 +357,7 @@ function DateOfBirth() {
                       variant="contained"
                       startIcon={<CheckCircleSharp />}
                       style={{
-                        fontFamily: 'IBM Plex Sans Devanagari ',
+                        fontFamily: "IBM Plex Sans Devanagari ",
                         width: "100%",
                         borderRadius: "8px",
                         marginBottom: "10px",
@@ -357,7 +373,7 @@ function DateOfBirth() {
                     variant="outlined"
                     startIcon={<Cancel />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari ',
+                      fontFamily: "IBM Plex Sans Devanagari ",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -395,7 +411,8 @@ function DateOfBirth() {
                   <DateCalendar
                     maxDate={dayjs()}
                     onChange={(selectedDate: any) => {
-                      setDate(moment(selectedDate.$d).format("YYYYMMDD"));
+                      console.log(moment(selectedDate.$d).format("YYYY-MM-DD"));
+                      setDOB(moment(selectedDate.$d).format("YYYY-MM-DD"));
                     }}
                   />
                 </LocalizationProvider>
@@ -405,7 +422,7 @@ function DateOfBirth() {
                 variant="contained"
                 startIcon={<CheckCircleSharp />}
                 style={{
-                  fontFamily: 'IBM Plex Sans Devanagari ',
+                  fontFamily: "IBM Plex Sans Devanagari ",
                   borderRadius: "8px",
                   backgroundColor: "#91278F",
                   width: "fitContent",
@@ -417,16 +434,10 @@ function DateOfBirth() {
                   setDOB(inputValue);
 
                   setTimeout(() => {
-                    // !enableLocation
-                    //   ? registerFlow(
-                    //       moment(inputValue).format("YYYY-MM-DD"),
-                    //       nextContext
-                    //     )
-                    //   : 
-                      registerFlow(
-                          flowComplete,
-                          "4b7c27be-5f61-437e-a271-ad72c9a20d5a"
-                        );
+                    registerFlow(
+                      completeFlowState,
+                      "4b7c27be-5f61-437e-a271-ad72c9a20d5a"
+                    );
                   }, 1000);
                 }}
               >

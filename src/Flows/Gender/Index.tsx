@@ -27,6 +27,8 @@ import {
   filterValue,
   getGender,
   isResponse,
+  playAudio,
+  playAudioCallBack,
   playAudioURL,
 } from "../../utils/data";
 import { audio } from "../../translation";
@@ -78,14 +80,27 @@ function Gender() {
 
   // };
 
+  
+
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    // setCheckMic(true);
+    if (!invalid) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.optionsErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -102,9 +117,11 @@ function Gender() {
     );
 
   const handleNo = () => {
-    console.log(1);
+    // console.log(1);
     stopRecognition();
-    setTryAgain(true);
+    // setTryAgain(true);
+    // setCheckValue(false);
+    setAskValue(true);
     setCheckValue(false);
   };
 
@@ -171,6 +188,7 @@ function Gender() {
       stopRecognition();
       setTranscriptState("");
       resetTranscript();
+      // stopAudio()
     };
   }, []);
 

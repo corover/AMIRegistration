@@ -59,7 +59,7 @@ const flowReducer = (state = initialState, action: any) => {
     case RESET_PROFILE:
       return {
         ...state,
-        languageView: true,
+        languageView: false,
         mobileNoView: false,
         generateOtpView: false,
         nameView: false,
@@ -70,6 +70,7 @@ const flowReducer = (state = initialState, action: any) => {
         cityView: false,
         pincodeView: false,
         areaOfIntrest: false,
+        locationView: false,
       };
 
     default:

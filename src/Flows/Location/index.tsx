@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   CloseIcon,
   ContainerVoice,
@@ -16,7 +16,12 @@ import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL, getFrequentVoice } from "../../utils/data";
+import {
+  isResponse,
+  playAudioURL,
+  getFrequentVoice,
+  playAudio,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
@@ -27,6 +32,7 @@ import {
 } from "../../store/Redux-Dispatcher/ApiDispatcher";
 
 function LocationAccess() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { selectedLanguage } = useSelector(reducer);
   const { mobileNoData } = useSelector(userProfileState);
   const [askValue, setAskValue] = useState(true);
@@ -93,26 +99,9 @@ function LocationAccess() {
     registerFlow({}, "862a79a6-3a3c-46f3-8721-332fe4ef4c00");
     // Add any additional logic you want to perform on denial
   };
-
   useEffect(() => {
-    const audioData = new Audio(apiData && apiData.audio);
-    audioData.play().catch((error) => {
-      console.error("Error playing audio:", error);
-    });
-
-    const handleAudioEnded = () => {
-      // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    };
-
-    audioData.addEventListener("ended", handleAudioEnded);
-
-    return () => {
-      if (!audioData.paused) {
-        audioData.pause();
-      }
-      audioData.currentTime = 0;
-      audioData.removeEventListener("ended", handleAudioEnded);
-    };
+    // const audioData = new Audio
+    playAudio(apiData && apiData.audio);
   }, []);
 
   return (
@@ -150,7 +139,7 @@ function LocationAccess() {
             variant="contained"
             startIcon={<CheckCircleSharp />}
             style={{
-              fontFamily: 'IBM Plex Sans Devanagari ',
+              fontFamily: "IBM Plex Sans Devanagari ",
               width: "100%",
               borderRadius: "8px",
               marginBottom: "10px",
@@ -166,7 +155,7 @@ function LocationAccess() {
             variant="contained"
             startIcon={<Cancel />}
             style={{
-              fontFamily: 'IBM Plex Sans Devanagari ',
+              fontFamily: "IBM Plex Sans Devanagari ",
               width: "100%",
               borderRadius: "8px",
               marginBottom: "10px",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { OptionHeader } from "../../ChatBot/ChatContent/Style";
 import { reducer, apiSelector } from "../../store/Redux-selector/Selector";
 import { useSelector } from "react-redux";
@@ -14,6 +14,7 @@ import {
   getFrequentVoice,
   languageList,
   languageListEnglish,
+  playAudio,
 } from "../../utils/data";
 import { LanguageHeader, audio } from "../../translation";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
@@ -21,6 +22,8 @@ import { ContainerMic } from "../../UI/Style";
 import ListeningMic from "../../UI/Listening";
 
 function LanguageSelection() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const { selectedLanguage } = useSelector(reducer);
   const [lang, setLang] = useState("en");
   const { nextContext, enableLocation } = useSelector(apiSelector);
@@ -47,26 +50,6 @@ function LanguageSelection() {
     setBackgroundColor("#91278F");
     await registerFlow(lang, nextContext);
   };
-  useEffect(() => {
-    const audioData = new Audio((audio as any)[selectedLanguage]?.langAudio);
-    audioData.play().catch((error) => {
-      console.error("Error playing audio:", error);
-    });
-
-    const handleAudioEnded = () => {
-      // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    };
-
-    audioData.addEventListener("ended", handleAudioEnded);
-
-    return () => {
-      if (!audioData.paused) {
-        audioData.pause();
-      }
-      audioData.currentTime = 0;
-      audioData.removeEventListener("ended", handleAudioEnded);
-    };
-  }, []);
 
   function getLangIdByName(name: any) {
     const interest = languageListEnglish.find(
@@ -81,6 +64,39 @@ function LanguageSelection() {
       handleLanguageChange(val);
     }
   }, [transcript]);
+
+  useEffect(() => {
+    // const audioData = new Audio((audio as any)[selectedLanguage]?.langAudio);
+    // audioRef.current = audioData;
+
+    // audioData.play().catch((error) => {
+    //   console.error("Error playing audio:", error);
+    // });
+
+    // const handleAudioEnded = () => {
+    //   // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
+    // };
+
+    // audioData.addEventListener("ended", handleAudioEnded);
+
+    // return () => {
+    //   if (audioRef.current && !audioRef.current.paused) {
+    //     audioRef.current.pause();
+    //   }
+    //   if (audioRef.current) {
+    //     audioRef.current.currentTime = 0;
+    //     audioRef.current.removeEventListener("ended", handleAudioEnded);
+    //   }
+    // };
+
+    playAudio((audio as any)[selectedLanguage]?.langAudio)
+  }, []);
+
+
+  useEffect(()=>{
+    !listening&&
+    stopRecognition()
+  },[listening])
 
   return (
     <div style={{ height: "fit-content" }}>
@@ -156,7 +172,7 @@ function LanguageSelection() {
                   // disabled={selectedOptions.length < 3 ? true : false}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                     fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari",
                     width: "fit-content",
                     borderRadius: "8px",
                     backgroundColor: "#91278F",

@@ -117,7 +117,7 @@ export const CloseIcon = styled.img`
 
 export const OptionHeader = styled.p`
 font-size: 24px;
-font-weight: 400;
+font-weight: 700;
 text-align: center;
 padding-top: 14px;
 margin: 4px;

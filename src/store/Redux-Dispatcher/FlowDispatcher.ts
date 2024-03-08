@@ -64,5 +64,6 @@ export const setLocation_View = (val: any) => {
 };
 
 export const setReset_View = () => {
+  console.log("reset")
   store.dispatch(reset_profile());
 };
