@@ -7,7 +7,7 @@ import {
 } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
 import { Button, Input } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Translations, Listening } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
@@ -134,6 +134,7 @@ function DateOfBirth() {
   }, [transcriptState]);
 
   useEffect(() => {
+    resetTranscript();
     playAudioURL(
       //   audioURLArray,
       [apiData.audio],
@@ -236,7 +237,7 @@ function DateOfBirth() {
                   fontWeight: "400",
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.dob}
+                {(Translations as any)[selectedLanguage]?.dob}
               </p>
             </div>
           </div>
@@ -269,7 +270,11 @@ function DateOfBirth() {
               <Mic
                 handleCloseMic={handleCloseMic}
                 inputValue={inputValue}
-                transcript={transcript.replace(/\s/g, "")}
+                transcript={
+                  formatDateToYYYYMMDD(transcript)
+                    ? formatDateToYYYYMMDD(transcript)
+                    : transcript
+                }
                 dots={dots}
               />
             )}
@@ -296,12 +301,12 @@ function DateOfBirth() {
               }}
             >
               <h3 style={{ fontSize: "24px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.reg}
+                {(Translations as any)[selectedLanguage]?.reg}
               </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
-                {(FlowHeaders as any)[selectedLanguage]?.dob}
+                {(Translations as any)[selectedLanguage]?.dob}
               </p>
             </div>
           </div>
@@ -319,7 +324,7 @@ function DateOfBirth() {
                   width: "413px",
                 }}
               >
-                <span> {(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                <span> {(Translations as any)[selectedLanguage]?.correct}</span>
                 <span
                   style={{
                     fontSize: "18px",
@@ -336,7 +341,7 @@ function DateOfBirth() {
 
                 {moment(inputValue).format("YYYY-MM-DD") === "Invalid date" && (
                   <p style={{ color: "#F15A59", fontSize: "15px" }}>
-                    {(FlowHeaders as any)[selectedLanguage]?.errDate}
+                    {(Translations as any)[selectedLanguage]?.errDate}
                   </p>
                 )}
                 <div
@@ -365,7 +370,7 @@ function DateOfBirth() {
                       }}
                       onClick={handleSubmit}
                     >
-                      {(FlowHeaders as any)[selectedLanguage]?.yes}
+                      {(Translations as any)[selectedLanguage]?.yes}
                     </Button>
                   </div>
 
@@ -382,7 +387,7 @@ function DateOfBirth() {
                     }}
                     onClick={handleNo}
                   >
-                    {(FlowHeaders as any)[selectedLanguage]?.no}
+                    {(Translations as any)[selectedLanguage]?.no}
                   </Button>
 
                   {listening && <ListeningMic />}
@@ -404,7 +409,9 @@ function DateOfBirth() {
                   flexDirection: "column",
                 }}
               >
-                <span>{(FlowHeaders as any)[selectedLanguage]?.tryAgain} </span>
+                <span>
+                  {(Translations as any)[selectedLanguage]?.tryAgain}{" "}
+                </span>
               </div>
               <div style={{ padding: "14px" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -441,7 +448,7 @@ function DateOfBirth() {
                   }, 1000);
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.submit}
+                {(Translations as any)[selectedLanguage]?.submit}
               </Button>
             </>
           )}

@@ -13,6 +13,7 @@ import { Listening } from "../translation";
 import { reducer } from "../store/Redux-selector/Selector";
 
 function Mic(props: any) {
+  const { resetTranscript } = useSpeechRecognitionHook();
   const { handleCloseMic, inputValue, transcript, dots } = props;
 
   const { selectedLanguage } = useSelector(reducer);
@@ -23,12 +24,12 @@ function Mic(props: any) {
     );
 
     return () => {
+      resetTranscript();
       playAudio(
         "https://coroverbackendstorage.blob.core.windows.net/chatbot-audio-bucket/caught.mp3"
       );
     };
   }, []);
-
 
   return (
     <ContainerVoice className={"ContainerVoice"} style={{ bottom: "0px" }}>

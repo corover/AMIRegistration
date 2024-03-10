@@ -1,57 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  CloseIcon,
-  ContainerVoice,
-  VoiceRecognitionContainer,
-  VoiceRecognitionSpan,
-} from "../../UI/Style";
+import { ContainerVoice } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Translations } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
-import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
-import { setName_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
-import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import {
-  isResponse,
-  playAudioURL,
-  getFrequentVoice,
-  playAudio,
-} from "../../utils/data";
-import { audio } from "../../translation";
-import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
-import ListeningMic from "../../UI/Listening";
-import Mic from "../../UI/Mic";
+import { playAudio } from "../../utils/data";
 import {
   setLocation,
   setEnableLocation,
 } from "../../store/Redux-Dispatcher/ApiDispatcher";
 
 function LocationAccess() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { selectedLanguage } = useSelector(reducer);
-  const { mobileNoData } = useSelector(userProfileState);
-  const [askValue, setAskValue] = useState(true);
-  const [checkValue, setCheckValue] = useState(false);
-  const [tryAgain, setTryAgain] = useState(false);
-  const [renderMic, setRenderMic] = useState(false);
-  const [dots, setDots] = useState(3);
-  const [transcriptState, setTranscriptState] = useState("");
-
-  const { nextContext } = useSelector(apiSelector);
-  const [inputValue, setInputValue] = useState("");
-  const [errorMessage, setErrorState] = useState("");
-  const [error, setError] = useState(true);
-  const [optWorng, setOtpWorng] = useState(false);
-  const [continuePinCode, setContinuePinCode] = useState(false);
-
-  const flowComplete = useSelector(userProfileState);
-
-  const { location, enableLocation, apiData } = useSelector(apiSelector);
+  const { nextContext, apiData } = useSelector(apiSelector);
 
   const fetchLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -59,9 +24,7 @@ function LocationAccess() {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
         setEnableLocation(true);
-
         registerFlow({ lat: latitude, lng: longitude }, nextContext);
-        // console.log("Latitude: ", latitude, "Longitude: ", longitude);
       },
       (err) => {
         console.error(`Error retrieving location: ${err.message}`);
@@ -77,7 +40,6 @@ function LocationAccess() {
         } else if (result.state === "prompt") {
           navigator.geolocation.getCurrentPosition(
             () => {
-              // console.log("Permission granted");
               fetchLocation();
             },
             (err) => {
@@ -95,12 +57,10 @@ function LocationAccess() {
 
   const deny = () => {
     setEnableLocation(false);
-    // console.log("Permission denied");
     registerFlow({}, "862a79a6-3a3c-46f3-8721-332fe4ef4c00");
-    // Add any additional logic you want to perform on denial
   };
+
   useEffect(() => {
-    // const audioData = new Audio
     playAudio(apiData && apiData.audio);
   }, []);
 
@@ -122,7 +82,7 @@ function LocationAccess() {
                 fontWeight: "400",
               }}
             >
-              {(FlowHeaders as any)[selectedLanguage]?.allowLocation}
+              {(Translations as any)[selectedLanguage]?.allowLocation}
             </p>
           </div>
         </div>
@@ -145,10 +105,9 @@ function LocationAccess() {
               marginBottom: "10px",
               backgroundColor: "#91278F",
             }}
-            // onClick={() => setContinuePinCode(true)}
             onClick={allow}
           >
-            {(FlowHeaders as any)[selectedLanguage]?.allow}
+            {(Translations as any)[selectedLanguage]?.allow}
           </Button>
 
           <Button
@@ -163,7 +122,7 @@ function LocationAccess() {
             }}
             onClick={deny}
           >
-            {(FlowHeaders as any)[selectedLanguage]?.deny}
+            {(Translations as any)[selectedLanguage]?.deny}
           </Button>
         </div>
       </ContainerVoice>

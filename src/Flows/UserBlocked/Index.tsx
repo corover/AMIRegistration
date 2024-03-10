@@ -2,7 +2,7 @@ import React from "react";
 import { ContainerVoice } from "../../UI/Style";
 import { useSelector } from "react-redux";
 import { apiSelector, reducer } from "../../store/Redux-selector/Selector";
-import { FlowHeaders } from "../../translation";
+import { Translations } from "../../translation";
 import { playAudio } from "../../utils/data";
 
 function BlockedUser() {
@@ -32,7 +32,7 @@ function BlockedUser() {
             fontWeight: "400",
           }}
         >
-          {(FlowHeaders as any)[selectedLanguage]?.block}
+          {(Translations as any)[selectedLanguage]?.block}
         </p>
       </div>
       <div
@@ -53,7 +53,7 @@ function BlockedUser() {
             fontWeight: "400",
           }}
         >
-          {(FlowHeaders as any)[selectedLanguage]?.blockMssg}
+          {(Translations as any)[selectedLanguage]?.blockMssg}
         </span>
       </div>
     </ContainerVoice>

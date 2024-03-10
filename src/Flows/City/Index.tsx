@@ -13,7 +13,7 @@ import {
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import {
-  FlowHeaders,
+  Translations,
   Listening,
   OptionSelect,
   OpentionsNotFound,
@@ -245,7 +245,7 @@ function City() {
                 style={{ maxHeight: "85vh", bottom: "0px" }}
               >
                 <span className="optionHeader" style={{ padding: "10px 0px" }}>
-                  {(FlowHeaders as any)[selectedLanguage]?.city}
+                  {(Translations as any)[selectedLanguage]?.city}
                 </span>
                 <div className="BoxSentMSGSchemes">
                   <>
@@ -331,11 +331,11 @@ function City() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{fontSize:"24px"}}>{(Translations as any)[selectedLanguage]?.reg}</h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
-                {(FlowHeaders as any)[selectedLanguage]?.city}
+                {(Translations as any)[selectedLanguage]?.city}
               </p>
             </div>
           </div>
@@ -354,10 +354,10 @@ function City() {
               >
                 {invalid ? (
                   <span style={{ color: "red", fontWeight: "400" }}>
-                    {(FlowHeaders as any)[selectedLanguage]?.errOpts}
+                    {(Translations as any)[selectedLanguage]?.errOpts}
                   </span>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>{(Translations as any)[selectedLanguage]?.correct}</span>
                 )}
 
                 <span
@@ -393,7 +393,7 @@ function City() {
                     }}
                     onClick={handleSubmit}
                   >
-                    {(FlowHeaders as any)[selectedLanguage]?.yes}
+                    {(Translations as any)[selectedLanguage]?.yes}
                   </Button>
                 </div>
 
@@ -411,7 +411,7 @@ function City() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
                 {listening && <ListeningMic />}
               </div>
@@ -432,7 +432,7 @@ function City() {
                   maxHeight: "85vh",
                 }}
               >
-                <span>{(FlowHeaders as any)[selectedLanguage]?.tryAgain} </span>
+                <span>{(Translations as any)[selectedLanguage]?.tryAgain} </span>
               </div>
 
               {renderMic ? (
@@ -452,7 +452,7 @@ function City() {
                       className="optionHeader"
                       style={{ padding: "10px 0px" }}
                     >
-                      {(FlowHeaders as any)[selectedLanguage]?.city}
+                      {(Translations as any)[selectedLanguage]?.city}
                     </span>
                     <div className="BoxSentMSGSchemes">
                       <>

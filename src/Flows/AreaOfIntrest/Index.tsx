@@ -9,7 +9,7 @@ import { CheckCircleSharp } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { setIntrest_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
 import { registerFlow } from "../../Apis";
-import { FlowHeaders } from "../../translation";
+import { Translations } from "../../translation";
 import Mic from "../../UI/Mic";
 import ListeningMic from "../../UI/Listening";
 import { setBackgroundColor } from "../../store/Redux-Dispatcher/Dispatcher";
@@ -18,45 +18,48 @@ function AreaOfIntrest() {
   const { nextContext, apiData } = useSelector(apiSelector);
   const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
 
+  // const  = {
+  //   status: true,
+  //   next_context: "4b7c27be-5f61-437e-a271-ad72c9a11y66",
+  //   audio:
+  //     "https://storage.googleapis.com/ami-tts-storage/6fecab7b-9d52-4dbf-9113-24079b201616.wav",
+  //   areaOfInterest: [
+  //     {
+  //       id: 26,
+  //       name: "Health",
+  //     },
+  //     {
+  //       id: 31,
+  //       name: "Agriculture",
+  //     },
+  //     {
+  //       id: 17,
+  //       name: "Employment",
+  //     },
+  //     {
+  //       id: 25,
+  //       name: "Government Schemes",
+  //     },
+  //     {
+  //       id: 16,
+  //       name: "Education",
+  //     },
+  //     {
+  //       id: 1,
+  //       name: "News",
+  //     },
+  //     {
+  //       id: 3,
+  //       name: "Sports",
+  //     },
+  //   ],
+  //   areaOfIntrestView: true,
+  // };
 
-
-//   const apiData={
-//     status : true,
-//     next_context: "4b7c27be-5f61-437e-a271-ad72c9a11y66",
-//     audio: "https://storage.googleapis.com/ami-tts-storage/6fecab7b-9d52-4dbf-9113-24079b201616.wav",
-//     areaOfInterest: [
-//         {
-//             id: 26,
-//             name: "Health"
-//         },
-//         {
-//             id: 31,
-//             name: "Agriculture"
-//         },
-//         {
-//             id: 17,
-//             name: "Employment"
-//         },
-//         // {
-//         //     "id": 25,
-//         //     "name": "Government Schemes"
-//         // },
-//         // {
-//         //     "id": 16,
-//         //     "name": "Education"
-//         // },
-//         // {
-//         //     "id": 1,
-//         //     "name": "News"
-//         // },
-//         // {
-//         //     "id": 3,
-//         //     "name": "Sports"
-//         // }
-//     ],
-//     "areaOfIntrestView": true
-// }
-
+  interface AreaOfInterestInterface {
+    id: number;
+    name: string;
+  }
   const {
     transcript,
     startRecognition,
@@ -68,9 +71,7 @@ function AreaOfIntrest() {
   } = useSpeechRecognitionHook();
   const [dots, setDots] = useState(3);
 
-  
   const handleIntrestChange = (id: any) => {
-    const stringId = String(id); // Convert id to string
     const isSelected = selectedOptions.includes(id);
 
     if (!isSelected) {
@@ -84,15 +85,23 @@ function AreaOfIntrest() {
 
   const onClickIntrest = async () => {
     setIntrest_view(false);
-    // setLanguage_view(false);
+
     setBackgroundColor("#91278F");
-    await registerFlow(selectedOptions, nextContext);
-  };
-  function getInterestIdByName(name: any) {
-    const interest = apiData.areaOfInterest.find(
-      (item: any) => item.name.toLowerCase() === name.toLowerCase()
+    const cleanedOptions = Array.from(new Set(selectedOptions)).filter(
+      (option) => option !== null && option !== undefined && option !== ""
     );
 
+    await registerFlow(cleanedOptions, nextContext);
+  };
+
+  function getInterestIdByName(name: string) {
+    const normalizedName = name.toLowerCase();
+    const interest = apiData.areaOfInterest.find(
+      (item: AreaOfInterestInterface) => {
+        const itemName = item.name.toLowerCase();
+        return itemName === normalizedName || itemName.includes(normalizedName);
+      }
+    );
     return interest ? interest.id : null;
   }
 
@@ -104,7 +113,6 @@ function AreaOfIntrest() {
     });
   }, []);
 
-  // console.log(selectedOptions);
   useEffect(() => {
     const interval = setInterval(() => {
       setDots((dots) => {
@@ -120,15 +128,15 @@ function AreaOfIntrest() {
     };
   }, []);
 
-  // console.log("getInterestIdByName(transcript)", getInterestIdByName("movie"))
   useEffect(() => {
-    const interestId = getInterestIdByName(transcript);
-    if (interestId !== null && !selectedOptions.includes(String(interestId))) {
-      setSelectedOptions((prevSelected) => [
-        ...prevSelected,
+    const interestId =
+      transcript.length > 0 &&
+      transcript.split(" ").map((item: any) => getInterestIdByName(item));
 
-        Number(interestId),
-      ]);
+    if (interestId) {
+      setSelectedOptions((prevSelectedOptions) => {
+        return [...prevSelectedOptions, ...(interestId || [])];
+      });
     }
   }, [transcript]);
 
@@ -138,20 +146,20 @@ function AreaOfIntrest() {
         className="optionHeader"
         style={{ fontSize: "24px !important " }}
       >
-        {(FlowHeaders as any)[selectedLanguage]?.intrest}
+        {(Translations as any)[selectedLanguage]?.intrest}
       </OptionHeader>
       <div
         style={{
           display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            cursor: "pointer",
-            overflow: "scroll",
-            marginTop:"20px",
-            alignContent: "space-between",
-            justifyContent: "center",
-            // maxHeight: "60vh",
-            padding: "0px 10px ",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          cursor: "pointer",
+          overflow: "scroll",
+          marginTop: "20px",
+          alignContent: "space-between",
+          justifyContent: "center",
+          // maxHeight: "60vh",
+          padding: "0px 10px ",
         }}
       >
         {apiData &&
@@ -209,7 +217,7 @@ function AreaOfIntrest() {
               disabled={selectedOptions.length < 3 ? true : false}
               startIcon={<CheckCircleSharp />}
               style={{
-                fontFamily: 'IBM Plex Sans Devanagari ',
+                fontFamily: "IBM Plex Sans Devanagari ",
                 width: "fit-content",
                 borderRadius: "8px",
                 backgroundColor: "#91278F",
@@ -217,7 +225,7 @@ function AreaOfIntrest() {
               }}
               onClick={onClickIntrest}
             >
-              {(FlowHeaders as any)[selectedLanguage]?.submit}
+              {(Translations as any)[selectedLanguage]?.submit}
             </Button>
           </div>
         </ContainerMic>

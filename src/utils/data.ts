@@ -315,7 +315,7 @@ export const playAudioCallBack = (audioUrl: string, handleNo: () => void) => {
     });
 
     audioElement.addEventListener("ended", () => {
-      // Call handleNo function when audio playback ends
+   
       handleNo();
     });
   }

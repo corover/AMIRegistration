@@ -1,52 +1,23 @@
 import React, { useState, useEffect } from "react";
-import {
-  CloseIcon,
-  ContainerVoice,
-  VoiceRecognitionContainer,
-  VoiceRecognitionSpan,
-} from "../../UI/Style";
+import { ContainerVoice, VoiceRecognitionContainer } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Translations } from "../../translation";
 import { useSelector } from "react-redux";
-import { reducer } from "../../store/Redux-selector/Selector";
-import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
-import { setName_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
-import { registerFlow } from "../../Apis";
-import { apiSelector } from "../../store/Redux-selector/Selector";
-import { userProfileState } from "../../store/Redux-selector/Selector";
-import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
 import {
-  isResponse,
-  playAudioURL,
-  getFrequentVoice,
-  playAudio,
-  playAudioCallBack,
-} from "../../utils/data";
+  reducer,
+  apiSelector,
+  userProfileState,
+} from "../../store/Redux-selector/Selector";
+import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
+import { registerFlow } from "../../Apis";
+import { isResponse, playAudioURL, playAudioCallBack } from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 function PinCode() {
-  const { selectedLanguage } = useSelector(reducer);
-  const { mobileNoData } = useSelector(userProfileState);
-  const [askValue, setAskValue] = useState(true);
-  const [checkValue, setCheckValue] = useState(false);
-  const [tryAgain, setTryAgain] = useState(false);
-  const [renderMic, setRenderMic] = useState(false);
-  const [dots, setDots] = useState(3);
-  const [transcriptState, setTranscriptState] = useState("");
-
-  const { nextContext, apiData } = useSelector(apiSelector);
-  const [inputValue, setInputValue] = useState("");
-  const [errorMessage, setErrorState] = useState("");
-  const [error, setError] = useState(true);
-  const [optWorng, setOtpWorng] = useState(false);
-  const [continuePinCode, setContinuePinCode] = useState(false);
-
-  const flowComplete = useSelector(userProfileState);
-
   const {
     transcript,
     startRecognition,
@@ -57,17 +28,29 @@ function PinCode() {
     resetTranscript,
   } = useSpeechRecognitionHook();
 
-  const handleInputChange = (event: any) => {
-    // setPinCode(event.target.value);
+  const [askValue, setAskValue] = useState(true);
+  const [checkValue, setCheckValue] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
+  const [renderMic, setRenderMic] = useState(false);
+  const [dots, setDots] = useState(3);
+  const [transcriptState, setTranscriptState] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [errorMessage, setErrorState] = useState("");
+  const [error, setError] = useState(true);
+  const [optWorng, setOtpWorng] = useState(false);
+  const [continuePinCode, setContinuePinCode] = useState(false);
 
+  const { selectedLanguage } = useSelector(reducer);
+  const { nextContext, apiData } = useSelector(apiSelector);
+
+  const handleInputChange = (event: any) => {
     setTranscriptState(event.target.value);
     setInputValue(event.target.value);
   };
 
   const handleClick = () => {
-    // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    if (!optWorng) {
+    if (!error) {
       playAudioURL(
         [(audio as any)[selectedLanguage]?.itsCorrect],
         isSpeechRecognitionSupported,
@@ -75,12 +58,6 @@ function PinCode() {
         requestPermission
       );
     } else {
-      // playAudioURL(
-      //   [(audio as any)[selectedLanguage]?.mobileErr],
-      //   isSpeechRecognitionSupported,
-      //   startRecognition,
-      //   requestPermission
-      // );
       playAudioCallBack((audio as any)[selectedLanguage]?.pinCodeErr, handleNo);
     }
   };
@@ -104,7 +81,7 @@ function PinCode() {
   const optWrong = () => {
     return (
       <p style={{ color: "red", fontSize: "15px" }}>
-        {(FlowHeaders as any)[selectedLanguage]?.optWrong}
+        {(Translations as any)[selectedLanguage]?.optWrong}
       </p>
     );
   };
@@ -135,7 +112,6 @@ function PinCode() {
     return () => {
       clearTimeout(value);
       clearTimeout(value_);
-      // setTranscriptState("")
     };
   }, [transcriptState]);
 
@@ -249,7 +225,7 @@ function PinCode() {
                   fontWeight: "400",
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.pincode}
+                {(Translations as any)[selectedLanguage]?.pincode}
               </p>
             </div>
           </div>
@@ -310,7 +286,7 @@ function PinCode() {
                 }}
                 onClick={() => setContinuePinCode(true)}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.enter}
+                {(Translations as any)[selectedLanguage]?.enter}
               </Button>
 
               <Button
@@ -325,7 +301,7 @@ function PinCode() {
                 }}
                 onClick={skipPinCode}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.skip}
+                {(Translations as any)[selectedLanguage]?.skip}
               </Button>
             </div>
           )}
@@ -351,12 +327,12 @@ function PinCode() {
               }}
             >
               <h3 style={{ fontSize: "24px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.reg}
+                {(Translations as any)[selectedLanguage]?.reg}
               </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
-                {(FlowHeaders as any)[selectedLanguage]?.pincode}
+                {(Translations as any)[selectedLanguage]?.pincode}
               </p>
             </div>
           </div>
@@ -378,7 +354,9 @@ function PinCode() {
                     {errorMessage}
                   </p>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>
+                    {(Translations as any)[selectedLanguage]?.correct}
+                  </span>
                 )}
                 {optWorng && optWrong()}
 
@@ -415,7 +393,7 @@ function PinCode() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.yes}
+                  {(Translations as any)[selectedLanguage]?.yes}
                 </Button>
 
                 <Button
@@ -431,7 +409,7 @@ function PinCode() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
 
                 {listening && <ListeningMic />}
@@ -483,7 +461,7 @@ function PinCode() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.submit}
+                  {(Translations as any)[selectedLanguage]?.submit}
                 </Button>
               </div>
             </>

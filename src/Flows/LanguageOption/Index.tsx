@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { OptionHeader } from "../../ChatBot/ChatContent/Style";
 import { reducer, apiSelector } from "../../store/Redux-selector/Selector";
 import { useSelector } from "react-redux";
@@ -9,24 +9,16 @@ import { Button } from "@mui/material";
 import { setLanguage_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
 import { registerFlow } from "../../Apis";
 import { setBackgroundColor } from "../../store/Redux-Dispatcher/Dispatcher";
-import { FlowHeaders } from "../../translation";
-import {
-  getFrequentVoice,
-  languageList,
-  languageListEnglish,
-  playAudio,
-} from "../../utils/data";
+import { Translations } from "../../translation";
+import { languageList, languageListEnglish, playAudio } from "../../utils/data";
 import { LanguageHeader, audio } from "../../translation";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
-import { ContainerMic } from "../../UI/Style";
 import ListeningMic from "../../UI/Listening";
 
 function LanguageSelection() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const { selectedLanguage } = useSelector(reducer);
+  const { nextContext } = useSelector(apiSelector);
   const [lang, setLang] = useState("en");
-  const { nextContext, enableLocation } = useSelector(apiSelector);
 
   const {
     transcript,
@@ -46,7 +38,6 @@ function LanguageSelection() {
 
   const onClickLanguage = async () => {
     setLanguage_view(false);
-
     setBackgroundColor("#91278F");
     await registerFlow(lang, nextContext);
   };
@@ -59,6 +50,11 @@ function LanguageSelection() {
   }
 
   useEffect(() => {
+    playAudio((audio as any)[selectedLanguage]?.langAudio);
+    return () => resetTranscript();
+  }, []);
+
+  useEffect(() => {
     const val = getLangIdByName(transcript);
     if (val) {
       handleLanguageChange(val);
@@ -66,37 +62,8 @@ function LanguageSelection() {
   }, [transcript]);
 
   useEffect(() => {
-    // const audioData = new Audio((audio as any)[selectedLanguage]?.langAudio);
-    // audioRef.current = audioData;
-
-    // audioData.play().catch((error) => {
-    //   console.error("Error playing audio:", error);
-    // });
-
-    // const handleAudioEnded = () => {
-    //   // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    // };
-
-    // audioData.addEventListener("ended", handleAudioEnded);
-
-    // return () => {
-    //   if (audioRef.current && !audioRef.current.paused) {
-    //     audioRef.current.pause();
-    //   }
-    //   if (audioRef.current) {
-    //     audioRef.current.currentTime = 0;
-    //     audioRef.current.removeEventListener("ended", handleAudioEnded);
-    //   }
-    // };
-
-    playAudio((audio as any)[selectedLanguage]?.langAudio)
-  }, []);
-
-
-  useEffect(()=>{
-    !listening&&
-    stopRecognition()
-  },[listening])
+    !listening && stopRecognition();
+  }, [listening]);
 
   return (
     <div style={{ height: "fit-content" }}>
@@ -113,7 +80,6 @@ function LanguageSelection() {
             overflow: "scroll",
             alignContent: "space-between",
             justifyContent: "center",
-            // maxHeight: "60vh",
             padding: "0px 20px ",
             marginTop: "15px",
           }}
@@ -169,7 +135,6 @@ function LanguageSelection() {
 
                 <Button
                   variant="contained"
-                  // disabled={selectedOptions.length < 3 ? true : false}
                   startIcon={<CheckCircleSharp />}
                   style={{
                     fontFamily: "IBM Plex Sans Devanagari",
@@ -181,15 +146,13 @@ function LanguageSelection() {
                   }}
                   onClick={onClickLanguage}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.submit}
+                  {(Translations as any)[selectedLanguage]?.submit}
                 </Button>
               </div>
             </>
           ) : (
             <ListeningMic />
           )}
-
-          {/* {listening &&  */}
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@ import {
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import {
-  FlowHeaders,
+  Translations,
   Listening,
   OptionSelect,
   OpentionsNotFound,
@@ -347,6 +347,7 @@ function State() {
   }, [transcriptState]);
 
   useEffect(() => {
+    resetTranscript();
     playAudioURL(
       [
         selectedLanguage === "en"
@@ -462,7 +463,7 @@ function State() {
                 style={{ maxHeight: "85vh", bottom: "0px" }}
               >
                 <span className="optionHeader" style={{ padding: "10px 0px" }}>
-                  {(FlowHeaders as any)[selectedLanguage]?.state}
+                  {(Translations as any)[selectedLanguage]?.state}
                 </span>
                 <div className="BoxSentMSGSchemes">
                   <>
@@ -559,11 +560,11 @@ function State() {
               }}
             >
               <h3 style={{ fontSize: "24px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.reg}
+                {(Translations as any)[selectedLanguage]?.reg}
               </h3>
 
               <p style={{ fontSize: "20px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.state}
+                {(Translations as any)[selectedLanguage]?.state}
               </p>
             </div>
           </div>
@@ -582,10 +583,10 @@ function State() {
               >
                 {invalid ? (
                   <span style={{ color: "red", fontWeight: "400" }}>
-                    {(FlowHeaders as any)[selectedLanguage]?.errOpts}
+                    {(Translations as any)[selectedLanguage]?.errOpts}
                   </span>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>{(Translations as any)[selectedLanguage]?.correct}</span>
                 )}
 
                 <span
@@ -621,7 +622,7 @@ function State() {
                     }}
                     onClick={handleSubmit}
                   >
-                    {(FlowHeaders as any)[selectedLanguage]?.yes}
+                    {(Translations as any)[selectedLanguage]?.yes}
                   </Button>
                 </div>
 
@@ -638,7 +639,7 @@ function State() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
                 {listening && <ListeningMic />}
               </div>
@@ -659,7 +660,7 @@ function State() {
                   maxHeight: "85vh",
                 }}
               >
-                <span>{(FlowHeaders as any)[selectedLanguage]?.tryAgain} </span>
+                <span>{(Translations as any)[selectedLanguage]?.tryAgain} </span>
               </div>
 
               {renderMic ? (
@@ -679,7 +680,7 @@ function State() {
                       className="optionHeader"
                       style={{ padding: "10px 0px" }}
                     >
-                      {(FlowHeaders as any)[selectedLanguage]?.state}
+                      {(Translations as any)[selectedLanguage]?.state}
                     </span>
                     <div className="BoxSentMSGSchemes">
                       <>

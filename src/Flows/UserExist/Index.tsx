@@ -2,7 +2,7 @@ import React from "react";
 import { ContainerVoice } from "../../UI/Style";
 import { useSelector } from "react-redux";
 import { apiSelector, reducer } from "../../store/Redux-selector/Selector";
-import { FlowHeaders } from "../../translation";
+import { Translations } from "../../translation";
 import { playAudio } from "../../utils/data";
 function ExistUser() {
   const [countdown, setCountdown] = React.useState(10);
@@ -47,7 +47,7 @@ function ExistUser() {
             fontWeight: "400",
           }}
         >
-          {(FlowHeaders as any)[selectedLanguage]?.profileExist}
+          {(Translations as any)[selectedLanguage]?.profileExist}
         </p>
       </div>
 
@@ -69,7 +69,7 @@ function ExistUser() {
               paddingTop: "35px",
             }}
           >
-            {(FlowHeaders as any)[selectedLanguage]?.profileExistMssg}
+            {(Translations as any)[selectedLanguage]?.profileExistMssg}
           </span>
 
           <div id="countdown">

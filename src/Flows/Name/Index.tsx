@@ -7,7 +7,7 @@ import {
 } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Translations, Listening } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
@@ -77,7 +77,7 @@ function Name() {
   const optWrong = () => {
     return (
       <p style={{ color: "red", fontSize: "15px" }}>
-        {(FlowHeaders as any)[selectedLanguage]?.optWrong}
+        {(Translations as any)[selectedLanguage]?.optWrong}
       </p>
     );
   };
@@ -221,7 +221,7 @@ function Name() {
                   fontWeight: "400",
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.name}
+                {(Translations as any)[selectedLanguage]?.name}
               </p>
             </div>
           </div>
@@ -280,11 +280,11 @@ function Name() {
               }}
             >
               <h3 style={{ fontSize: "24px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.reg}
+                {(Translations as any)[selectedLanguage]?.reg}
               </h3>
 
               <p style={{ fontSize: "20px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.name}
+                {(Translations as any)[selectedLanguage]?.name}
               </p>
             </div>
           </div>
@@ -333,7 +333,7 @@ function Name() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.yes}
+                  {(Translations as any)[selectedLanguage]?.yes}
                 </Button>
 
                 <Button
@@ -349,7 +349,7 @@ function Name() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
 
                 {listening && <ListeningMic />}
@@ -388,7 +388,7 @@ function Name() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.submit}
+                  {(Translations as any)[selectedLanguage]?.submit}
                 </Button>
               </div>
             </>

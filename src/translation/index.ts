@@ -33,7 +33,7 @@ export const OpentionsNotFound = {
   hi: "विकल्प नहीं मिला",
 };
 
-export const FlowHeaders = {
+export const Translations = {
   en: {
     name: "Tell me your name",
     mobile: "Tell me your mobile number",
@@ -64,6 +64,7 @@ export const FlowHeaders = {
     allowLocation: "Please enable location access",
     allow: "Allow",
     deny: "Deny",
+    mobileMssg: "Enter 10 digit number",
   },
   hi: {
     name: "अपना नाम बताइये",
@@ -95,6 +96,7 @@ export const FlowHeaders = {
     allowLocation: "कृपया स्थान पहुंच सक्षम करें",
     allow: "अनुमति दें",
     deny: "अस्वीकार करें",
+    mobileMssg: "10 अंकीय संख्या दर्ज करें",
   },
 };
 
@@ -131,7 +133,7 @@ export const audio = {
       "https://storage.googleapis.com/ami-tts-storage/c47c4026-04ff-4c54-a423-cd89af00e04c.wav",
     dateErr:
       "https://storage.googleapis.com/ami-tts-storage/8b918e8b-651d-471a-9a1f-745515ff151c.wav",
-      pinCodeErr:
+    pinCodeErr:
       "https://storage.googleapis.com/ami-tts-storage/6b6a0a5d-5437-412b-bdb8-0b28eeaced1a.wav ",
   },
 };
