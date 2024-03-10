@@ -1,6 +1,5 @@
 import "./Style.css";
 import { LogoImage, TopLogoHeader } from "../Body/Style";
-import React, { Component }  from 'react';
 import { useSelector } from "react-redux";
 import {
   flowReducer,
