@@ -19,6 +19,7 @@ import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
+import PopUp from "../../UI/PopUp";
 
 function OTPValidation() {
   const [askValue, setAskValue] = useState(true);
@@ -242,7 +243,10 @@ function OTPValidation() {
     <div>
       {askValue ? (
         // ask details no1
+
         <ContainerVoice className={"ContainerVoice"}>
+          <PopUp otp={apiData.otp} />
+
           <div style={{ height: "100%", flexGrow: 1, paddingBottom: "30px" }}>
             <div
               style={{
@@ -287,12 +291,14 @@ function OTPValidation() {
               />
             </VoiceRecognitionContainer>
             {renderMic && (
-              <Mic
-                handleCloseMic={handleCloseMic}
-                inputValue={inputValue}
-                transcript={transcript.replace(/\s/g, "")}
-                dots={dots}
-              />
+              <>
+                <Mic
+                  handleCloseMic={handleCloseMic}
+                  inputValue={inputValue}
+                  transcript={transcript.replace(/\s/g, "")}
+                  dots={dots}
+                />
+              </>
             )}
           </div>
         </ContainerVoice>

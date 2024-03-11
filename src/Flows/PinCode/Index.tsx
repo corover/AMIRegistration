@@ -28,6 +28,14 @@ function PinCode() {
     resetTranscript,
   } = useSpeechRecognitionHook();
 
+  // const apiData = {
+  //   status: true,
+  //   next_context: "ebb762fb-3f7b-4fe3-ad1f-3b7b19cd5e68",
+  //   district: 10,
+  //   audio:
+  //     "https://storage.googleapis.com/ami-tts-storage/dc85ed60-31cc-418c-897d-d0869e43c930.wav",
+  //   pincodeView: true,
+  // };
   const [askValue, setAskValue] = useState(true);
   const [checkValue, setCheckValue] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
@@ -50,7 +58,7 @@ function PinCode() {
 
   const handleClick = () => {
     setCheckMic(true);
-    if (!error) {
+    if (error) {
       playAudioURL(
         [(audio as any)[selectedLanguage]?.itsCorrect],
         isSpeechRecognitionSupported,
@@ -69,7 +77,9 @@ function PinCode() {
 
   const handleSubmit = async () => {
     stopRecognition();
-    await registerFlow(transcriptState, nextContext);
+    setTimeout(async () => {
+      await registerFlow(transcriptState, nextContext);
+    }, 1000);
   };
 
   const skipPinCode = async () => {
@@ -190,6 +200,8 @@ function PinCode() {
       handleCloseMic();
       handleNo();
     }
+
+    // console.log(transcript);
   }, [transcript]);
 
   useEffect(() => {

@@ -190,11 +190,11 @@ function DateOfBirth() {
       const data = formatDateToYYYYMMDD(transcript)
         ? formatDateToYYYYMMDD(transcript)
         : transcript;
-      console.log(
-        formatDateToYYYYMMDD(transcript)
-          ? formatDateToYYYYMMDD(transcript)
-          : transcript
-      );
+      // console.log(
+      //   formatDateToYYYYMMDD(transcript)
+      //     ? formatDateToYYYYMMDD(transcript)
+      //     : transcript
+      // );
       data && setInputValue(filterValue(data));
       transcript.length > 0 && setDOB(data);
 
@@ -418,7 +418,7 @@ function DateOfBirth() {
                   <DateCalendar
                     maxDate={dayjs()}
                     onChange={(selectedDate: any) => {
-                      console.log(moment(selectedDate.$d).format("YYYY-MM-DD"));
+                      // console.log(moment(selectedDate.$d).format("YYYY-MM-DD"));
                       setDOB(moment(selectedDate.$d).format("YYYY-MM-DD"));
                     }}
                   />

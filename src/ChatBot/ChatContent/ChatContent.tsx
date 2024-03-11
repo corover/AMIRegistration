@@ -23,6 +23,7 @@ import AreaOfIntrest from "../../Flows/AreaOfIntrest/Index";
 import FlowComplete from "../../Flows/FlowComplete/Index";
 import PinCode from "../../Flows/PinCode/Index";
 import LocationAccess from "../../Flows/Location";
+import PopUp from "../../UI/PopUp";
 
 function ChatContent() {
   const {
@@ -42,25 +43,28 @@ function ChatContent() {
   const { loading, bgColor } = useSelector(reducer);
   const { apiData, isBlocked, hasProfile, isNewUser, enableLocation } =
     useSelector(apiSelector);
- 
 
   const renderComponent = () => {
     switch (true) {
       case loading:
         return <LoadingComponent />;
       case languageView:
-        return  <LanguageSelection />;
+        return <LanguageSelection />;
       case mobileNoView:
         return <MobileNumber />;
       case generateOtpView:
-        return <OTPValidation />;
+        return (
+          <>
+            <OTPValidation />
+          </>
+        );
       case apiData && isBlocked:
         return <BlockedUser />;
       case apiData && hasProfile:
         return <ExistUser />;
       case nameView && isNewUser:
         return <Name />;
-      case locationView &&isNewUser:
+      case locationView && isNewUser:
         return <LocationAccess />;
       case genderView:
         return <Gender />;
@@ -87,7 +91,6 @@ function ChatContent() {
       <TopLogoHeader className={"TopLogoHeader"}>
         <LogoImage className={"LogoImage"} src="a_logo.png" alt="header" />
       </TopLogoHeader>
-
       {renderComponent()}
     </div>
   );
