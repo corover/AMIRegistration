@@ -19,6 +19,7 @@ function Mic(props: any) {
   const { selectedLanguage } = useSelector(reducer);
 
   React.useEffect(() => {
+    resetTranscript();
     playAudio(
       "https://coroverbackendstorage.blob.core.windows.net/chatbot-audio-bucket/start.mp3"
     );

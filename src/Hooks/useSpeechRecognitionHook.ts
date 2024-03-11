@@ -35,7 +35,6 @@ function useSpeechRecognitionHook() {
   }
 
   const startRecognition = () => {
-    
     SpeechRecognition.startListening({
       continuous: false,
       language: isIOS() ? `en-US` : `${selectedLanguage_}-IN`,
@@ -44,7 +43,6 @@ function useSpeechRecognitionHook() {
   };
 
   const stopRecognition = () => {
-   
     SpeechRecognition.stopListening();
     isIOS() && recorder.saveRecording();
   };
@@ -56,7 +54,6 @@ function useSpeechRecognitionHook() {
     if (!supported) {
       console.error("Speech recognition is not supported on this device.");
     }
-
     return supported;
   };
 
@@ -75,7 +72,6 @@ function useSpeechRecognitionHook() {
       isIOS() && recorder.startRecording();
     } catch (error) {
       console.error("Permission denied:", error);
-      alert("Error: " + error);
     }
   };
 

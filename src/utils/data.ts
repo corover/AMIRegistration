@@ -49,6 +49,9 @@ export function isResponse(transcript: any, language: string) {
     "yeah",
     "right",
     "sahi",
+    "han",
+    "haah",
+    "hah"
   ];
   negativeResponses = [
     "no",

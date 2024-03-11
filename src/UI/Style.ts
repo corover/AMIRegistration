@@ -15,28 +15,6 @@ const animate = keyframes`
   }
 `;
 
-// export const ContainerVoice = styled.div`
-//   width: 424px;
-//   display: flex;
-//   flex-direction: column;
-//   transition: height 2s ease-in-out;
-//    flex-grow: 1;
-//     width: 100%;
-//     position: absolute;
-//     bottom: 29px;
-//     left: 0px;
-//     background-color: white;
-//     z-index: 999999;
-//     border-bottom: 1px solid rgba(128, 128, 128, 0.31);
-//     border-top-left-radius: 15px;
-//     border-top-right-radius: 15px;
-
-// }
-
-//   @media only screen and (max-width: 600px) {
-//     width: 100%;
-//   }
-// `;
 export const ContainerVoice = styled.div`
   width: 424px;
   display: flex;
@@ -53,8 +31,7 @@ export const ContainerVoice = styled.div`
   border-top-right-radius: 15px;
   // transition: transform 0.5s ease-in-out;
   transition: transform 0.5s ease-in-out;
- 
-  
+
   @media only screen and (max-width: 600px) {
     width: 100%;
   }
