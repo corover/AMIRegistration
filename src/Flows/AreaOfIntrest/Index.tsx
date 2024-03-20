@@ -13,6 +13,7 @@ import { Translations } from "../../translation";
 import Mic from "../../UI/Mic";
 import ListeningMic from "../../UI/Listening";
 import { setBackgroundColor } from "../../store/Redux-Dispatcher/Dispatcher";
+import { getIntrest } from "../../utils/data";
 function AreaOfIntrest() {
   const { selectedLanguage, loading } = useSelector(reducer);
   const { nextContext, apiData } = useSelector(apiSelector);
@@ -55,7 +56,43 @@ function AreaOfIntrest() {
   //   ],
   //   areaOfIntrestView: true,
   // };
-
+  // const apiData = {
+  //   status: true,
+  //   next_context: "4b7c27be-5f61-437e-a271-ad72c9a11y66",
+  //   audio:
+  //     "https://coroverbackendstorage.blob.core.windows.net/chatbot-audio-bucket/7cb2c4bc-d265-4174-bed1-c468bb0d1340_hi.mp3",
+  //   areaOfInterest: [
+  //     {
+  //       id: 26,
+  //       name: "स्वास्थ्य",
+  //     },
+  //     {
+  //       id: 31,
+  //       name: "कृषि",
+  //     },
+  //     {
+  //       id: 17,
+  //       name: "रोज़गार",
+  //     },
+  //     {
+  //       id: 25,
+  //       name: "सरकारी योजनाएँ",
+  //     },
+  //     {
+  //       id: 16,
+  //       name: "शिक्षा",
+  //     },
+  //     {
+  //       id: 1,
+  //       name: "समाचार",
+  //     },
+  //     {
+  //       id: 3,
+  //       name: "खेल",
+  //     },
+  //   ],
+  //   areaOfIntrestView: true,
+  // };
   interface AreaOfInterestInterface {
     id: number;
     name: string;

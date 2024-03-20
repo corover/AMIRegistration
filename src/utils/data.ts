@@ -51,7 +51,7 @@ export function isResponse(transcript: any, language: string) {
     "sahi",
     "han",
     "haah",
-    "hah"
+    "hah",
   ];
   negativeResponses = [
     "no",
@@ -287,6 +287,19 @@ export const getGender = (word: string): string => {
   return genderMapping[lowerCaseWord] || "";
 };
 
+export const getIntrest = (word: string): string => {
+  const data: { [key: string]: string } = {
+    रोजगार: "रोज़गार",
+    के: "खेल",
+    शिक्षक:"शिक्षा",
+    शिक्षा:"शिक्षा",
+    केन:"खेल",
+    
+  };
+  const lowerCaseWord = word.toLowerCase();
+  return data[lowerCaseWord] || "";
+};
+
 export const playAudio = (audioUrl: string) => {
   if (!audioUrl) return;
 
@@ -318,7 +331,6 @@ export const playAudioCallBack = (audioUrl: string, handleNo: () => void) => {
     });
 
     audioElement.addEventListener("ended", () => {
-   
       handleNo();
     });
   }
