@@ -133,12 +133,17 @@ function AreaOfIntrest() {
 
   function getInterestIdByName(name: string) {
     const normalizedName = name.toLowerCase();
-    const interest = apiData.areaOfInterest.find(
-      (item: AreaOfInterestInterface) => {
-        const itemName = item.name.toLowerCase();
-        return itemName === normalizedName || itemName.includes(normalizedName);
+    let data = [...apiData.areaOfInterest];
+    data = data.map((item) => {
+      if (item.name === "रोज़गार") {
+        return { ...item, name: "रोजगार" };
       }
-    );
+      return item;
+    });
+    const interest = data.find((item: AreaOfInterestInterface) => {
+      const itemName = item.name.toLowerCase();
+      return itemName.includes(normalizedName);
+    });
     return interest ? interest.id : null;
   }
 
@@ -166,6 +171,7 @@ function AreaOfIntrest() {
   }, []);
 
   useEffect(() => {
+    console.log(transcript);
     const interestId =
       transcript.length > 0 &&
       transcript.split(" ").map((item: any) => getInterestIdByName(item));

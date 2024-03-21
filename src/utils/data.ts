@@ -291,9 +291,12 @@ export const getIntrest = (word: string): string => {
   const data: { [key: string]: string } = {
     रोजगार: "रोज़गार",
     के: "खेल",
-    शिक्षक:"शिक्षा",
-    शिक्षा:"शिक्षा",
-    केन:"खेल",
+    शिक्षक: "शिक्षा",
+    शिक्षा: "शिक्षा",
+    केन: "खेल",
+    समाचार:"समाचार",
+    सरकारी :"सरकारी ",
+    योजना:"योजना"
     
   };
   const lowerCaseWord = word.toLowerCase();
