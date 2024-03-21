@@ -10,7 +10,8 @@ import {
   pincode_view,
   city_view,
   area_Intrest,
-  reset_profile
+  reset_profile,
+  location_View,
 } from "../Redux-actions/flowViewActions";
 import store from "../Redux/Redux-Store";
 
@@ -58,7 +59,11 @@ export const setIntrest_view = (val: any) => {
   store.dispatch(area_Intrest(val));
 };
 
+export const setLocation_View = (val: any) => {
+  store.dispatch(location_View(val));
+};
 
-export const setReset_View =()=>{
-  store.dispatch(reset_profile())
-}
+export const setReset_View = () => {
+  console.log("reset")
+  store.dispatch(reset_profile());
+};

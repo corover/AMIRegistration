@@ -9,10 +9,17 @@ import { apiSelector } from "../store/Redux-selector/Selector";
 import { lang } from "../store/Redux-selector/Selector";
 import { reducer } from "../store/Redux-selector/Selector";
 import { flowReducer } from "../store/Redux-selector/Selector";
+import { playAudio } from "../utils/data";
 
 function useSpeechRecognitionHook() {
-  const { stateView, districtView, cityView, areaOfIntrest } =
-    useSelector(flowReducer);
+  const {
+    stateView,
+    districtView,
+    cityView,
+    areaOfIntrest,
+    genderView,
+    nameView,
+  } = useSelector(flowReducer);
   const { selectedLanguage, checkMic } = useSelector(reducer);
   let selectedLanguage_ = selectedLanguage;
   const nextContext = useSelector(apiSelector).nextContext;
@@ -21,7 +28,7 @@ function useSpeechRecognitionHook() {
     registerFlow(blob, nextContext);
   });
 
-  if (stateView || districtView || cityView || areaOfIntrest) {
+  if (stateView || districtView || areaOfIntrest || genderView || nameView) {
     selectedLanguage_ = selectedLanguage;
   } else {
     selectedLanguage_ = "en";
@@ -47,7 +54,6 @@ function useSpeechRecognitionHook() {
     if (!supported) {
       console.error("Speech recognition is not supported on this device.");
     }
-
     return supported;
   };
 
@@ -66,7 +72,6 @@ function useSpeechRecognitionHook() {
       isIOS() && recorder.startRecording();
     } catch (error) {
       console.error("Permission denied:", error);
-      alert("Error: " + error);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { OptionHeader } from "../../ChatBot/ChatContent/Style";
 import { reducer, apiSelector } from "../../store/Redux-selector/Selector";
 import { useSelector } from "react-redux";
@@ -9,21 +9,16 @@ import { Button } from "@mui/material";
 import { setLanguage_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
 import { registerFlow } from "../../Apis";
 import { setBackgroundColor } from "../../store/Redux-Dispatcher/Dispatcher";
-import { FlowHeaders } from "../../translation";
-import {
-  getFrequentVoice,
-  languageList,
-  languageListEnglish,
-} from "../../utils/data";
-import { LanguageHeader } from "../../translation";
+import { Translations } from "../../translation";
+import { languageList, languageListEnglish, playAudio } from "../../utils/data";
+import { LanguageHeader, audio } from "../../translation";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
-import { ContainerMic } from "../../UI/Style";
 import ListeningMic from "../../UI/Listening";
 
 function LanguageSelection() {
   const { selectedLanguage } = useSelector(reducer);
+  const { nextContext } = useSelector(apiSelector);
   const [lang, setLang] = useState("en");
-  const nextContext = useSelector(apiSelector).nextContext;
 
   const {
     transcript,
@@ -43,31 +38,9 @@ function LanguageSelection() {
 
   const onClickLanguage = async () => {
     setLanguage_view(false);
-
     setBackgroundColor("#91278F");
     await registerFlow(lang, nextContext);
   };
-  useEffect(() => {
-    const audio = new Audio("");
-
-    audio.play().catch((error) => {
-      console.error("Error playing audio:", error);
-    });
-
-    const handleAudioEnded = () => {
-      // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    };
-
-    audio.addEventListener("ended", handleAudioEnded);
-
-    return () => {
-      if (!audio.paused) {
-        audio.pause();
-      }
-      audio.currentTime = 0;
-      audio.removeEventListener("ended", handleAudioEnded);
-    };
-  }, []);
 
   function getLangIdByName(name: any) {
     const interest = languageListEnglish.find(
@@ -77,12 +50,20 @@ function LanguageSelection() {
   }
 
   useEffect(() => {
-    const val = getLangIdByName(transcript)
-    if(val){
+    playAudio((audio as any)[selectedLanguage]?.langAudio);
+    return () => resetTranscript();
+  }, []);
+
+  useEffect(() => {
+    const val = getLangIdByName(transcript);
+    if (val) {
       handleLanguageChange(val);
     }
-    
   }, [transcript]);
+
+  useEffect(() => {
+    !listening && stopRecognition();
+  }, [listening]);
 
   return (
     <div style={{ height: "fit-content" }}>
@@ -99,7 +80,8 @@ function LanguageSelection() {
             overflow: "scroll",
             alignContent: "space-between",
             justifyContent: "center",
-            maxHeight: "60vh",
+            padding: "0px 20px ",
+            marginTop: "15px",
           }}
         >
           {languageList &&
@@ -122,20 +104,6 @@ function LanguageSelection() {
             right: 0,
           }}
         >
-          {/* <Button
-            variant="contained"
-            startIcon={<CheckCircleSharp />}
-            style={{
-              borderRadius: "8px",
-              backgroundColor: "#91278F",
-              width: "fitContent",
-              display: "flex",
-              margin: "auto",
-            }}
-            onClick={onClickLanguage}
-          >
-            {(FlowHeaders as any)[selectedLanguage]?.submit}
-          </Button> */}
           {!listening ? (
             <>
               <div
@@ -167,11 +135,10 @@ function LanguageSelection() {
 
                 <Button
                   variant="contained"
-                  // disabled={selectedOptions.length < 3 ? true : false}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
-                    width: "30%",
+                    fontFamily: "IBM Plex Sans Devanagari",
+                    width: "fit-content",
                     borderRadius: "8px",
                     backgroundColor: "#91278F",
                     marginTop: "20px",
@@ -179,15 +146,13 @@ function LanguageSelection() {
                   }}
                   onClick={onClickLanguage}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.submit}
+                  {(Translations as any)[selectedLanguage]?.submit}
                 </Button>
               </div>
             </>
           ) : (
             <ListeningMic />
           )}
-
-          {/* {listening &&  */}
         </div>
       </div>
     </div>

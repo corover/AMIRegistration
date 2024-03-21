@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   width: 424px;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   left: 0;
@@ -42,6 +42,7 @@ export const Footer = styled.span`
   align-items: center;
   height: 30px;
   font-size:10px;
+  font-family:IBM Plex Sans Devanagari;
   // padding-top: 5px;
   // padding-bottom: 5px;
   border-top: 1px solid rgb(238, 238, 238);

@@ -1,6 +1,5 @@
 import Chatbot from "./ChatBot/Body/ChatBot";
-import { Provider } from "react-redux";
-import store from "./store/Redux/Redux-Store";
+
 
 function App() {
   return (
@@ -12,9 +11,7 @@ function App() {
         height: "100%",
       }}
     >
-      <Provider store={store}>
-        <Chatbot />
-      </Provider>
+      <Chatbot />
     </div>
   );
 }

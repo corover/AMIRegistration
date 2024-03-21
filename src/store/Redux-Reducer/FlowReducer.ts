@@ -11,6 +11,7 @@ import {
   PINCODE_VIEW,
   RESET_PROFILE,
   AREA_OF_INTREST,
+  LOCATION_VIEW,
 } from "../Redux-actions/flowViewActions";
 
 const initialState = {
@@ -25,6 +26,7 @@ const initialState = {
   cityView: false,
   pincodeView: false,
   areaOfIntrest: false,
+  locationView: false,
 };
 
 // Reducer function
@@ -36,6 +38,8 @@ const flowReducer = (state = initialState, action: any) => {
       return { ...state, mobileNoView: action.payload };
     case GENARATE_OTP_VIEW:
       return { ...state, generateOtpView: action.payload };
+    case LOCATION_VIEW:
+      return { ...state, locationView: action.payload };
     case NAME_VIEW:
       return { ...state, nameView: action.payload };
     case GENDER_VIEW:
@@ -55,7 +59,7 @@ const flowReducer = (state = initialState, action: any) => {
     case RESET_PROFILE:
       return {
         ...state,
-        languageView: true,
+        languageView: false,
         mobileNoView: false,
         generateOtpView: false,
         nameView: false,
@@ -66,6 +70,7 @@ const flowReducer = (state = initialState, action: any) => {
         cityView: false,
         pincodeView: false,
         areaOfIntrest: false,
+        locationView: false,
       };
 
     default:

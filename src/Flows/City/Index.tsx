@@ -13,7 +13,7 @@ import {
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import {
-  FlowHeaders,
+  Translations,
   Listening,
   OptionSelect,
   OpentionsNotFound,
@@ -25,16 +25,17 @@ import { userProfileState } from "../../store/Redux-selector/Selector";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { setDistrict } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
+import { filterValue, isResponse, playAudioURL } from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 const btnStyle = {
-  backgroundColor: "#ededed",
+  backgroundColor: "white",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
+  border: "1px solid #F0D9F0"
 };
 
 function City() {
@@ -188,7 +189,7 @@ function City() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+  },1500);
 
     return () => {
       clearTimeout(timeoutId);
@@ -197,8 +198,8 @@ function City() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript);
-      setInputValue(transcript);
+      setTranscriptState( filterValue(transcript) );
+      setInputValue(filterValue(transcript));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -244,7 +245,7 @@ function City() {
                 style={{ maxHeight: "85vh", bottom: "0px" }}
               >
                 <span className="optionHeader" style={{ padding: "10px 0px" }}>
-                  {(FlowHeaders as any)[selectedLanguage]?.city}
+                  {(Translations as any)[selectedLanguage]?.city}
                 </span>
                 <div className="BoxSentMSGSchemes">
                   <>
@@ -330,11 +331,11 @@ function City() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{fontSize:"24px"}}>{(Translations as any)[selectedLanguage]?.reg}</h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
-                {(FlowHeaders as any)[selectedLanguage]?.city}
+                {(Translations as any)[selectedLanguage]?.city}
               </p>
             </div>
           </div>
@@ -353,10 +354,10 @@ function City() {
               >
                 {invalid ? (
                   <span style={{ color: "red", fontWeight: "400" }}>
-                    {(FlowHeaders as any)[selectedLanguage]?.errOpts}
+                    {(Translations as any)[selectedLanguage]?.errOpts}
                   </span>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>{(Translations as any)[selectedLanguage]?.correct}</span>
                 )}
 
                 <span
@@ -384,7 +385,7 @@ function City() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: 'IBM Plex Sans Devanagari ',
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -392,7 +393,7 @@ function City() {
                     }}
                     onClick={handleSubmit}
                   >
-                    {(FlowHeaders as any)[selectedLanguage]?.yes}
+                    {(Translations as any)[selectedLanguage]?.yes}
                   </Button>
                 </div>
 
@@ -401,7 +402,7 @@ function City() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: 'IBM Plex Sans Devanagari ',
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -410,7 +411,7 @@ function City() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
                 {listening && <ListeningMic />}
               </div>
@@ -431,7 +432,7 @@ function City() {
                   maxHeight: "85vh",
                 }}
               >
-                <span>{(FlowHeaders as any)[selectedLanguage]?.tryAgain} </span>
+                <span>{(Translations as any)[selectedLanguage]?.tryAgain} </span>
               </div>
 
               {renderMic ? (
@@ -451,7 +452,7 @@ function City() {
                       className="optionHeader"
                       style={{ padding: "10px 0px" }}
                     >
-                      {(FlowHeaders as any)[selectedLanguage]?.city}
+                      {(Translations as any)[selectedLanguage]?.city}
                     </span>
                     <div className="BoxSentMSGSchemes">
                       <>

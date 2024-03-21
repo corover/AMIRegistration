@@ -13,7 +13,7 @@ import {
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import {
-  FlowHeaders,
+  Translations,
   Listening,
   OptionSelect,
   OpentionsNotFound,
@@ -25,16 +25,23 @@ import { userProfileState } from "../../store/Redux-selector/Selector";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { setDistrict } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
+import {
+  filterValue,
+  isResponse,
+  playAudio,
+  playAudioCallBack,
+  playAudioURL,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 const btnStyle = {
-  backgroundColor: "#ededed",
+  backgroundColor: "white",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
+  border: "1px solid #F0D9F0",
 };
 
 function District() {
@@ -51,8 +58,6 @@ function District() {
   const [invalid, SetInvalid] = useState(false);
   const [check, setCheck] = useState(true);
   const [transcriptState, setTranscriptState] = useState("");
-
-  
 
   const stateID = useSelector(userProfileState).stateData;
 
@@ -75,12 +80,23 @@ function District() {
 
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    // setCheckMic(true);
+    if (!invalid) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.optionsErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -103,7 +119,9 @@ function District() {
     );
   const handleNo = () => {
     stopRecognition();
-    setTryAgain(true);
+    // setTryAgain(true);
+    // setCheckValue(false);
+    setAskValue(true);
     setCheckValue(false);
   };
 
@@ -121,8 +139,6 @@ function District() {
         setCheckValue(false);
       }
     }, 2200);
-
-    
 
     if (
       transcript.length > 0 &&
@@ -145,6 +161,7 @@ function District() {
   }, [transcriptState]);
 
   useEffect(() => {
+    resetTranscript();
     playAudioURL(
       [apiData.audio],
       isSpeechRecognitionSupported,
@@ -195,10 +212,12 @@ function District() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
+      // if(selectedLanguage==="hi"){
       setTranscriptState(transcript);
       setInputValue(transcript);
+      // }
     }
-
+    console.log(transcript);
     let response = isResponse(transcript, selectedLanguage);
     switch (response) {
       case "positive":
@@ -242,7 +261,7 @@ function District() {
                 style={{ maxHeight: "85vh", bottom: "0px" }}
               >
                 <span className="optionHeader" style={{ padding: "10px 0px" }}>
-                  {(FlowHeaders as any)[selectedLanguage]?.district}
+                  {(Translations as any)[selectedLanguage]?.district}
                 </span>
                 <div className="BoxSentMSGSchemes">
                   <>
@@ -328,11 +347,13 @@ function District() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(Translations as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
-                {(FlowHeaders as any)[selectedLanguage]?.district}
+                {(Translations as any)[selectedLanguage]?.district}
               </p>
             </div>
           </div>
@@ -351,10 +372,10 @@ function District() {
               >
                 {invalid ? (
                   <span style={{ color: "red", fontWeight: "400" }}>
-                    {(FlowHeaders as any)[selectedLanguage]?.errOpts}
+                    {(Translations as any)[selectedLanguage]?.errOpts}
                   </span>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>{(Translations as any)[selectedLanguage]?.correct}</span>
                 )}
 
                 <span
@@ -382,7 +403,7 @@ function District() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: "IBM Plex Sans Devanagari ",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -390,7 +411,7 @@ function District() {
                     }}
                     onClick={handleSubmit}
                   >
-                    {(FlowHeaders as any)[selectedLanguage]?.yes}
+                    {(Translations as any)[selectedLanguage]?.yes}
                   </Button>
                 </div>
 
@@ -398,7 +419,7 @@ function District() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -407,7 +428,7 @@ function District() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
                 {listening && <ListeningMic />}
               </div>
@@ -428,7 +449,7 @@ function District() {
                   maxHeight: "85vh",
                 }}
               >
-                <span>{(FlowHeaders as any)[selectedLanguage]?.tryAgain} </span>
+                <span>{(Translations as any)[selectedLanguage]?.tryAgain} </span>
               </div>
 
               {renderMic ? (
@@ -448,7 +469,7 @@ function District() {
                       className="optionHeader"
                       style={{ padding: "10px 0px" }}
                     >
-                      {(FlowHeaders as any)[selectedLanguage]?.district}
+                      {(Translations as any)[selectedLanguage]?.district}
                     </span>
                     <div className="BoxSentMSGSchemes">
                       <>

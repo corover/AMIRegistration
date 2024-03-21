@@ -22,6 +22,8 @@ import City from "../../Flows/City/Index";
 import AreaOfIntrest from "../../Flows/AreaOfIntrest/Index";
 import FlowComplete from "../../Flows/FlowComplete/Index";
 import PinCode from "../../Flows/PinCode/Index";
+import LocationAccess from "../../Flows/Location";
+import PopUp from "../../UI/PopUp";
 
 function ChatContent() {
   const {
@@ -36,9 +38,10 @@ function ChatContent() {
     cityView,
     pincodeView,
     areaOfIntrest,
+    locationView,
   } = useSelector(flowReducer);
   const { loading, bgColor } = useSelector(reducer);
-  const { apiData, isBlocked, hasProfile, isNewUser } =
+  const { apiData, isBlocked, hasProfile, isNewUser, enableLocation } =
     useSelector(apiSelector);
 
   const renderComponent = () => {
@@ -50,24 +53,30 @@ function ChatContent() {
       case mobileNoView:
         return <MobileNumber />;
       case generateOtpView:
-        return <OTPValidation />;
+        return (
+          <>
+            <OTPValidation />
+          </>
+        );
       case apiData && isBlocked:
         return <BlockedUser />;
       case apiData && hasProfile:
         return <ExistUser />;
       case nameView && isNewUser:
         return <Name />;
+      case locationView && isNewUser:
+        return <LocationAccess />;
       case genderView:
         return <Gender />;
       case dobView:
         return <DateOfBirth />;
-      case stateView:
+      case !enableLocation && stateView:
         return <State />;
-      case districtView:
+      case !enableLocation && districtView:
         return <District />;
-      case cityView:
-        return <City />;
-      case pincodeView:
+      // case !enableLocation && cityView:
+      //   return <City />;
+      case !enableLocation && pincodeView:
         return <PinCode />;
       case areaOfIntrest:
         return <AreaOfIntrest />;
@@ -77,13 +86,11 @@ function ChatContent() {
         return <LanguageSelection />;
     }
   };
-
   return (
     <div className="ContentChat" style={{ backgroundColor: `${bgColor}` }}>
       <TopLogoHeader className={"TopLogoHeader"}>
         <LogoImage className={"LogoImage"} src="a_logo.png" alt="header" />
       </TopLogoHeader>
-
       {renderComponent()}
     </div>
   );

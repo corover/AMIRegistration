@@ -1,46 +1,23 @@
 import React, { useState, useEffect } from "react";
-import {
-  CloseIcon,
-  ContainerVoice,
-  VoiceRecognitionContainer,
-  VoiceRecognitionSpan,
-} from "../../UI/Style";
+import { ContainerVoice, VoiceRecognitionContainer } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Translations } from "../../translation";
 import { useSelector } from "react-redux";
-import { reducer } from "../../store/Redux-selector/Selector";
+import {
+  reducer,
+  apiSelector,
+  userProfileState,
+} from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
-import { setName_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
 import { registerFlow } from "../../Apis";
-import { apiSelector } from "../../store/Redux-selector/Selector";
-import { userProfileState } from "../../store/Redux-selector/Selector";
-import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL, getFrequentVoice } from "../../utils/data";
+import { isResponse, playAudioURL, playAudioCallBack } from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 function PinCode() {
-  const { selectedLanguage } = useSelector(reducer);
-  const { mobileNoData } = useSelector(userProfileState);
-  const [askValue, setAskValue] = useState(true);
-  const [checkValue, setCheckValue] = useState(false);
-  const [tryAgain, setTryAgain] = useState(false);
-  const [renderMic, setRenderMic] = useState(false);
-  const [dots, setDots] = useState(3);
-  const [transcriptState, setTranscriptState] = useState("");
-
-  const { nextContext, apiData } = useSelector(apiSelector);
-  const [inputValue, setInputValue] = useState("");
-  const [errorMessage, setErrorState] = useState("");
-  const [error, setError] = useState(true);
-  const [optWorng, setOtpWorng] = useState(false);
-
-  const flowComplete = useSelector(userProfileState);
-
-  console.log("flowComplete", flowComplete);
   const {
     transcript,
     startRecognition,
@@ -51,22 +28,46 @@ function PinCode() {
     resetTranscript,
   } = useSpeechRecognitionHook();
 
+  // const apiData = {
+  //   status: true,
+  //   next_context: "ebb762fb-3f7b-4fe3-ad1f-3b7b19cd5e68",
+  //   district: 10,
+  //   audio:
+  //     "https://storage.googleapis.com/ami-tts-storage/dc85ed60-31cc-418c-897d-d0869e43c930.wav",
+  //   pincodeView: true,
+  // };
+  const [askValue, setAskValue] = useState(true);
+  const [checkValue, setCheckValue] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
+  const [renderMic, setRenderMic] = useState(false);
+  const [dots, setDots] = useState(3);
+  const [transcriptState, setTranscriptState] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [errorMessage, setErrorState] = useState("");
+  const [error, setError] = useState(true);
+  const [optWorng, setOtpWorng] = useState(false);
+  const [continuePinCode, setContinuePinCode] = useState(false);
+
+  const { selectedLanguage } = useSelector(reducer);
+  const { nextContext, apiData } = useSelector(apiSelector);
+
   const handleInputChange = (event: any) => {
-    setPinCode(event.target.value);
-    console.log("event.target.value", event.target.value);
     setTranscriptState(event.target.value);
     setInputValue(event.target.value);
   };
 
   const handleClick = () => {
-    // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    if (error) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      playAudioCallBack((audio as any)[selectedLanguage]?.pinCodeErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -76,13 +77,21 @@ function PinCode() {
 
   const handleSubmit = async () => {
     stopRecognition();
-    await registerFlow(flowComplete, nextContext);
+    setTimeout(async () => {
+      await registerFlow(transcriptState, nextContext);
+    }, 1000);
+  };
+
+  const skipPinCode = async () => {
+    setTimeout(async () => {
+      await registerFlow(transcriptState, nextContext);
+    }, 1000);
   };
 
   const optWrong = () => {
     return (
-      <p style={{ color: "red", fontSize: "12px" }}>
-        {(FlowHeaders as any)[selectedLanguage]?.optWrong}
+      <p style={{ color: "red", fontSize: "15px" }}>
+        {(Translations as any)[selectedLanguage]?.optWrong}
       </p>
     );
   };
@@ -113,18 +122,12 @@ function PinCode() {
     return () => {
       clearTimeout(value);
       clearTimeout(value_);
-      // setTranscriptState("")
     };
   }, [transcriptState]);
 
   useEffect(() => {
     playAudioURL(
-      [
-        selectedLanguage === "en"
-          ? "https://storage.googleapis.com/ami-tts-storage/428b4643-5354-4cbd-a1d0-3e2c76652ed5.wav"
-          : "https://storage.googleapis.com/ami-tts-storage/c39856bc-bac3-4c86-a260-4b2093594dfd.wav",
-        apiData.audio,
-      ],
+      [apiData.audio],
       isSpeechRecognitionSupported,
       startRecognition,
       requestPermission
@@ -140,8 +143,14 @@ function PinCode() {
       stopRecognition();
       setTranscriptState("");
       resetTranscript();
+      playAudioURL(
+        [apiData.audio],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      ).pauseOrStopAudio(true);
     };
-  }, apiData.audio);
+  }, [apiData.audio]);
 
   useEffect(() => {
     let timmer: any;
@@ -175,8 +184,7 @@ function PinCode() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setPinCode(transcript.replace(/\s/g, ""));
-
+      // transcript.length > 0 && setPinCode(transcript.replace(/\s/g, ""));
       setTranscriptState(transcript.replace(/\s/g, ""));
       setInputValue(transcript.replace(/\s/g, ""));
     }
@@ -192,6 +200,8 @@ function PinCode() {
       handleCloseMic();
       handleNo();
     }
+
+    // console.log(transcript);
   }, [transcript]);
 
   useEffect(() => {
@@ -227,43 +237,86 @@ function PinCode() {
                   fontWeight: "400",
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.pincode}
+                {(Translations as any)[selectedLanguage]?.pincode}
               </p>
             </div>
           </div>
 
-          <div
-            style={{
-              height: "50%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-              width: "100%",
-            }}
-          >
-            <VoiceRecognitionContainer className={"VoiceRecognitionContainer"}>
-              <img
-                src="Mic.svg"
-                alt="mic"
-                style={{ zIndex: 999 }}
-                onClick={() =>
-                  isSpeechRecognitionSupported()
-                    ? startRecognition()
-                    : requestPermission()
-                }
-              />
-            </VoiceRecognitionContainer>
-            {renderMic && (
-              <Mic
-                handleCloseMic={handleCloseMic}
-                inputValue={inputValue}
-                transcript={transcript.replace(/\s/g, "")}
-                dots={dots}
-              />
-            )}
-          </div>
+          {continuePinCode ? (
+            <div
+              style={{
+                height: "50%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "relative",
+                width: "100%",
+              }}
+            >
+              <VoiceRecognitionContainer
+                className={"VoiceRecognitionContainer"}
+              >
+                <img
+                  src="Mic.svg"
+                  alt="mic"
+                  style={{ zIndex: 999 }}
+                  onClick={() =>
+                    isSpeechRecognitionSupported()
+                      ? startRecognition()
+                      : requestPermission()
+                  }
+                />
+              </VoiceRecognitionContainer>
+              {renderMic && (
+                <Mic
+                  handleCloseMic={handleCloseMic}
+                  inputValue={inputValue}
+                  transcript={transcript.replace(/\s/g, "")}
+                  dots={dots}
+                />
+              )}
+            </div>
+          ) : (
+            <div
+              style={{
+                padding: "5px",
+                fontSize: "17px",
+                cursor: "pointer",
+                margin: "20px 100px 20px 100px",
+              }}
+            >
+              <Button
+                variant="contained"
+                startIcon={<CheckCircleSharp />}
+                style={{
+                  fontFamily: "IBM Plex Sans Devanagari ",
+                  width: "100%",
+                  borderRadius: "8px",
+                  marginBottom: "10px",
+                  backgroundColor: "#91278F",
+                }}
+                onClick={() => setContinuePinCode(true)}
+              >
+                {(Translations as any)[selectedLanguage]?.enter}
+              </Button>
+
+              <Button
+                variant="contained"
+                startIcon={<Cancel />}
+                style={{
+                  fontFamily: "IBM Plex Sans Devanagari ",
+                  width: "100%",
+                  borderRadius: "8px",
+                  marginBottom: "10px",
+                  backgroundColor: "#91278F",
+                }}
+                onClick={skipPinCode}
+              >
+                {(Translations as any)[selectedLanguage]?.skip}
+              </Button>
+            </div>
+          )}
         </ContainerVoice>
       ) : (
         // verfi the micData no2
@@ -285,11 +338,13 @@ function PinCode() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(Translations as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
-                {(FlowHeaders as any)[selectedLanguage]?.pincode}
+                {(Translations as any)[selectedLanguage]?.pincode}
               </p>
             </div>
           </div>
@@ -307,11 +362,13 @@ function PinCode() {
                 }}
               >
                 {!error ? (
-                  <p style={{ color: "red", fontSize: "12px" }}>
+                  <p style={{ color: "red", fontSize: "15px" }}>
                     {errorMessage}
                   </p>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>
+                    {(Translations as any)[selectedLanguage]?.correct}
+                  </span>
                 )}
                 {optWorng && optWrong()}
 
@@ -340,7 +397,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -348,13 +405,14 @@ function PinCode() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.yes}
+                  {(Translations as any)[selectedLanguage]?.yes}
                 </Button>
 
                 <Button
                   variant="outlined"
                   startIcon={<Cancel />}
-                  style={{ fontFamily: 'IBM Plex Sans Devanagari',
+                  style={{
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -363,7 +421,7 @@ function PinCode() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
 
                 {listening && <ListeningMic />}
@@ -397,7 +455,7 @@ function PinCode() {
                     outline: "none",
                     letterSpacing: "22px",
                     textAlign: "center",
-                    border: "1px solid gray",
+                    border: "1px solid white",
                   }}
                 />
 
@@ -406,7 +464,7 @@ function PinCode() {
                   disabled={!error || optWorng}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",
@@ -415,7 +473,7 @@ function PinCode() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.submit}
+                  {(Translations as any)[selectedLanguage]?.submit}
                 </Button>
               </div>
             </>

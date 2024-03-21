@@ -13,7 +13,7 @@ import {
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import {
-  FlowHeaders,
+  Translations,
   Listening,
   OptionSelect,
   OpentionsNotFound,
@@ -23,16 +23,27 @@ import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
-import { isResponse, playAudioURL } from "../../utils/data";
+import {
+  filterValue,
+  getGender,
+  isResponse,
+  playAudio,
+  playAudioCallBack,
+  playAudioURL,
+} from "../../utils/data";
 import { audio } from "../../translation";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
+import { userProfileState } from "../../store/Redux-selector/Selector";
+import { setGenderData } from "../../store/Redux-Dispatcher/UserDispatcher";
+import userProfileReducer from "../../store/Redux-Reducer/UserReducer";
 
 const btnStyle = {
-  backgroundColor: "#ededed",
+  backgroundColor: "white",
   borderRadius: "50%",
   padding: "5px",
   margin: "3px",
+  border: "1px solid #F0D9F0",
 };
 
 function Gender() {
@@ -42,14 +53,18 @@ function Gender() {
   const [tryAgain, setTryAgain] = useState(false);
   const [renderMic, setRenderMic] = useState(false);
   const [dots, setDots] = useState(3);
-  const nextContext = useSelector(apiSelector).nextContext;
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [dropdownStyle, setDropDownStyle] = useState("dropDown");
+  const [dropdownStyle, setDropDownStyle] = useState("dropDown_");
   const [invalid, SetInvalid] = useState(false);
   const [check, setCheck] = useState(true);
   const [transcriptState, setTranscriptState] = useState("");
-  const apiData = useSelector(apiSelector).apiData;
+
+  const { enableLocation, nextContext, apiData } = useSelector(apiSelector);
+  const flowComplete = useSelector(userProfileState);
+  const [flag, setFlag] = useState(false);
+
+  const { genderData } = useSelector(userProfileState);
 
   const {
     transcript,
@@ -61,14 +76,31 @@ function Gender() {
     resetTranscript,
   } = useSpeechRecognitionHook();
 
+  // const handleSubmitMapping = (data: string) => {
+
+  // };
+
+  
+
   const handleClick = () => {
     // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    // setCheckMic(true);
+    if (!invalid) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      // playAudioURL(
+      //   [(audio as any)[selectedLanguage]?.mobileErr],
+      //   isSpeechRecognitionSupported,
+      //   startRecognition,
+      //   requestPermission
+      // );
+      playAudioCallBack((audio as any)[selectedLanguage]?.optionsErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -76,22 +108,31 @@ function Gender() {
     setRenderMic(false);
   };
 
-  const handleSubmit = async () => {
-    stopRecognition();
-    await registerFlow(inputValue, nextContext);
-  };
-
   const filteredStatesOptions =
     apiData &&
+    apiData.gender &&
     apiData.gender.length > 0 &&
     apiData.gender.filter((val: any) =>
       val.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
   const handleNo = () => {
+    // console.log(1);
     stopRecognition();
-    setTryAgain(true);
+    // setTryAgain(true);
+    // setCheckValue(false);
+    setAskValue(true);
     setCheckValue(false);
+  };
+
+  const handleSubmit = () => {
+    stopRecognition();
+    registerFlow(inputValue, nextContext);
+    // setTimeout(() => {
+    //   !enableLocation
+    //     ?
+    //     : registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+    // }, 1000);
   };
 
   useEffect(() => {
@@ -100,21 +141,21 @@ function Gender() {
         setAskValue(false);
         setCheckValue(true);
       }
-    }, 1800);
+    }, 1500);
 
     const value_ = setTimeout(() => {
       if (tryAgain && transcriptState.length > 0) {
         setTryAgain(false);
         setCheckValue(false);
       }
-    }, 2200);
+    }, 1800);
 
     if (
-      transcript.length > 0 &&
+      transcriptState.length > 0 &&
       check &&
       Array.isArray(apiData.gender) &&
       apiData.gender.some((option: any) =>
-        transcript.toLowerCase().includes(option.name.toLowerCase())
+        transcriptState.toLowerCase().includes(option.name.toLowerCase())
       )
     ) {
       SetInvalid(false);
@@ -130,6 +171,7 @@ function Gender() {
   }, [transcriptState]);
 
   useEffect(() => {
+    resetTranscript()
     playAudioURL(
       [apiData && apiData.audio],
       isSpeechRecognitionSupported,
@@ -147,6 +189,7 @@ function Gender() {
       stopRecognition();
       setTranscriptState("");
       resetTranscript();
+      // stopAudio()
     };
   }, []);
 
@@ -180,8 +223,19 @@ function Gender() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript);
-      setInputValue(transcript);
+      transcript.length > 0 &&
+        // setGenderData(
+        //   filterValue(transcript).charAt(0).toUpperCase() +
+        //     filterValue(transcript).slice(1)
+        // );
+        setTranscriptState(
+          getGender(transcript) ? getGender(transcript) : transcript
+        );
+      setInputValue(
+        getGender(transcript.charAt(0).toUpperCase() + transcript.slice(1))
+          ? getGender(transcript.charAt(0).toUpperCase() + transcript.slice(1))
+          : transcript.charAt(0).toUpperCase() + transcript.slice(1)
+      );
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -192,21 +246,25 @@ function Gender() {
         break;
 
       case "negative":
-        handleCloseMic();
+        stopRecognition();
+        setRenderMic(false);
         handleNo();
         break;
 
       default:
     }
+
+    // console.log("transcript",transcript)
   }, [transcript]);
 
-  React.useEffect(() => {
-    if (apiData && apiData.gender.length < 5) {
-      setDropDownStyle("dropDown_");
-    } else {
-      setDropDownStyle("dropDown");
-    }
-  }, [apiData.gender]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     !enableLocation
+  //       ? flag && registerFlow(inputValue, nextContext)
+  //       : flag &&
+  //         registerFlow(flowComplete, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+  //   }, 1000);
+  // }, [genderData, flag]);
 
   return (
     <div>
@@ -217,7 +275,7 @@ function Gender() {
             <Mic
               handleCloseMic={handleCloseMic}
               inputValue={inputValue}
-              transcript={transcript.replace(/\s/g, "")}
+              transcript={transcript}
               dots={dots}
             />
           ) : (
@@ -227,7 +285,7 @@ function Gender() {
                 style={{ maxHeight: "85vh", bottom: "0px" }}
               >
                 <span className="optionHeader" style={{ padding: "10px 0px" }}>
-                  {(FlowHeaders as any)[selectedLanguage]?.gender}
+                  {(Translations as any)[selectedLanguage]?.gender}
                 </span>
                 <div className="BoxSentMSGSchemes">
                   <>
@@ -267,10 +325,12 @@ function Gender() {
                         <p
                           className="optionItem"
                           onClick={() => {
-                            stopRecognition();
-                            setInputValue(val.name);
+                            // setGenderData(
+                            //   val.name.charAt(0).toUpperCase() +
+                            //     val.name.slice(1)
+                            // );
+                            setFlag(true);
                             registerFlow(val.name, nextContext);
-                            setCheck(false);
                           }}
                         >
                           {val.name}
@@ -312,10 +372,12 @@ function Gender() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(Translations as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.gender}
+                {(Translations as any)[selectedLanguage]?.gender}
               </p>
             </div>
           </div>
@@ -334,10 +396,10 @@ function Gender() {
               >
                 {invalid ? (
                   <span style={{ color: "red", fontWeight: "400" }}>
-                    {(FlowHeaders as any)[selectedLanguage]?.errOpts}
+                    {(Translations as any)[selectedLanguage]?.errOpts}
                   </span>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>{(Translations as any)[selectedLanguage]?.correct}</span>
                 )}
 
                 <span
@@ -365,7 +427,7 @@ function Gender() {
                     variant="contained"
                     startIcon={<CheckCircleSharp />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: "IBM Plex Sans Devanagari ",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -373,7 +435,7 @@ function Gender() {
                     }}
                     onClick={handleSubmit}
                   >
-                    {(FlowHeaders as any)[selectedLanguage]?.yes}
+                    {(Translations as any)[selectedLanguage]?.yes}
                   </Button>
                 </div>
 
@@ -381,7 +443,7 @@ function Gender() {
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -390,7 +452,7 @@ function Gender() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
                 {listening && <ListeningMic />}
               </div>
@@ -411,7 +473,7 @@ function Gender() {
                   maxHeight: "85vh",
                 }}
               >
-                <span>{(FlowHeaders as any)[selectedLanguage]?.tryAgain} </span>
+                <span>{(Translations as any)[selectedLanguage]?.tryAgain} </span>
               </div>
 
               {renderMic ? (
@@ -431,7 +493,7 @@ function Gender() {
                       className="optionHeader"
                       style={{ padding: "10px 0px" }}
                     >
-                      {(FlowHeaders as any)[selectedLanguage]?.gender}
+                      {(Translations as any)[selectedLanguage]?.gender}
                     </span>
                     <div className="BoxSentMSGSchemes">
                       <>
@@ -468,10 +530,12 @@ function Gender() {
                             <p
                               className="optionItem"
                               onClick={() => {
-                                stopRecognition();
-                                setInputValue(val.name);
+                                // setGenderData(
+                                //   val.name.charAt(0).toUpperCase() +
+                                //     val.name.slice(1)
+                                // );
+                                setFlag(true);
                                 registerFlow(val.name, nextContext);
-                                setCheck(false);
                               }}
                             >
                               {val.name}

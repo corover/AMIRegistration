@@ -1,7 +1,6 @@
 body {
   margin: 0;
 
-  font-family: 'IBM Plex Sans Devanagari !important';
   
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -12,6 +11,8 @@ html {
   height: 100%;
   padding: 0;
   margin: 0;
+  /* font-family: 'IBM Plex Sans Devanagari !important'; */
+
 }
 div::-webkit-scrollbar {
   background-color: #fff;
@@ -25,7 +26,7 @@ div::-webkit-scrollbar-thumb {
   border-radius: 16px;
   border: 4px solid #fff;
 }
-code {
+/* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
+} */

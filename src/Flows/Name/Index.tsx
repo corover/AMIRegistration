@@ -7,7 +7,7 @@ import {
 } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Translations, Listening } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
@@ -16,7 +16,7 @@ import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
 import { userProfileState } from "../../store/Redux-selector/Selector";
 import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
+import { filterValue, isResponse, playAudioURL } from "../../utils/data";
 import { audio } from "../../translation";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
@@ -30,10 +30,10 @@ function Name() {
   const [renderMic, setRenderMic] = useState(false);
   const [dots, setDots] = useState(3);
   const [transcriptState, setTranscriptState] = useState("");
-
-  const { nextContext, apiData } = useSelector(apiSelector);
+  const { nextContext, apiData, accessToken, location, enableLocation } =
+    useSelector(apiSelector);
   const [inputValue, setInputValue] = useState("");
-
+  const { mobileNoData } = useSelector(userProfileState);
   const {
     transcript,
     startRecognition,
@@ -76,8 +76,8 @@ function Name() {
 
   const optWrong = () => {
     return (
-      <p style={{ color: "red", fontSize: "12px" }}>
-        {(FlowHeaders as any)[selectedLanguage]?.optWrong}
+      <p style={{ color: "red", fontSize: "15px" }}>
+        {(Translations as any)[selectedLanguage]?.optWrong}
       </p>
     );
   };
@@ -95,7 +95,7 @@ function Name() {
         setCheckValue(true);
         handleCloseMic();
       }
-    }, 1800);
+    }, 1500);
 
     const value_ = setTimeout(() => {
       if (tryAgain && transcript.length > 0) {
@@ -103,7 +103,7 @@ function Name() {
         setCheckValue(false);
         handleCloseMic();
       }
-    }, 2200);
+    }, 1800);
 
     return () => {
       clearTimeout(value);
@@ -114,7 +114,12 @@ function Name() {
 
   useEffect(() => {
     playAudioURL(
-      [apiData && apiData.audio],
+      [
+        selectedLanguage === "en"
+          ? "https://storage.googleapis.com/ami-tts-storage/837aff98-8275-4d1b-a7b9-a350b8d5d007.wav"
+          : "https://storage.googleapis.com/ami-tts-storage/d31f1cf2-bde3-4311-9cde-cab7cf97746d.wav",
+        apiData && apiData.audio,
+      ],
       isSpeechRecognitionSupported,
       startRecognition,
       requestPermission
@@ -125,11 +130,25 @@ function Name() {
       });
     }, 500);
 
+    // if (enableLocation && accessToken.length > 0) {
+    //   locationApi(location.lat, location.lng, mobileNoData);
+    // }
     return () => {
       clearInterval(interval);
       stopRecognition();
       setTranscriptState("");
       resetTranscript();
+      playAudioURL(
+        [
+          selectedLanguage === "en"
+            ? "https://storage.googleapis.com/ami-tts-storage/837aff98-8275-4d1b-a7b9-a350b8d5d007.wav"
+            : "https://storage.googleapis.com/ami-tts-storage/d31f1cf2-bde3-4311-9cde-cab7cf97746d.wav",
+          apiData && apiData.audio,
+        ],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      ).pauseOrStopAudio(true);
     };
   }, []);
 
@@ -165,8 +184,8 @@ function Name() {
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript);
-      setInputValue(transcript);
+      setTranscriptState((transcript));
+      setInputValue((transcript));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -202,7 +221,7 @@ function Name() {
                   fontWeight: "400",
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.name}
+                {(Translations as any)[selectedLanguage]?.name}
               </p>
             </div>
           </div>
@@ -260,10 +279,12 @@ function Name() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(Translations as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.name}
+                {(Translations as any)[selectedLanguage]?.name}
               </p>
             </div>
           </div>
@@ -304,7 +325,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -312,14 +333,14 @@ function Name() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.yes}
+                  {(Translations as any)[selectedLanguage]?.yes}
                 </Button>
 
                 <Button
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -328,7 +349,7 @@ function Name() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
 
                 {listening && <ListeningMic />}
@@ -358,7 +379,7 @@ function Name() {
                   variant="contained"
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",
@@ -367,7 +388,7 @@ function Name() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.submit}
+                  {(Translations as any)[selectedLanguage]?.submit}
                 </Button>
               </div>
             </>

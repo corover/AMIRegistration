@@ -6,8 +6,8 @@ import {
   VoiceRecognitionSpan,
 } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
-import { Button } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Button, Input } from "@mui/material";
+import { Translations, Listening } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
@@ -20,8 +20,11 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs, { Dayjs } from "dayjs";
 import moment from "moment";
 import {
+  filterValue,
   formatDateToYYYYMMDD,
   isResponse,
+  playAudio,
+  playAudioCallBack,
   playAudioURL,
 } from "../../utils/data";
 import { audio } from "../../translation";
@@ -29,9 +32,12 @@ import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 import { getFrequentVoice } from "../../utils/data";
+import { setDOB } from "../../store/Redux-Dispatcher/UserDispatcher";
 function DateOfBirth() {
+  const flowComplete = useSelector(userProfileState);
+
   const { selectedLanguage } = useSelector(reducer);
-  const { mobileNoData } = useSelector(userProfileState);
+  const { mobileNoData, dobData } = useSelector(userProfileState);
   const [askValue, setAskValue] = useState(true);
   const [checkValue, setCheckValue] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
@@ -40,10 +46,19 @@ function DateOfBirth() {
   const nextContext = useSelector(apiSelector).nextContext;
   const [inputValue, setInputValue] = useState("");
   const [transcriptState, setTranscriptState] = useState("");
-
-  const apiData = useSelector(apiSelector).apiData;
+  const [completeFlowState, setCompleteFlowState] = useState(flowComplete);
+  const { enableLocation, apiData } = useSelector(apiSelector);
 
   const [date, setDate] = useState("");
+
+  // const  = {
+  //   status: "success",
+  //   next_context: "862a79a6-3a3c-46f3-8721-332fe4ef4c00",
+  //   gender: "Male",
+  //   audio:
+  //     "https://storage.googleapis.com/ami-tts-storage/44791ebb-176c-4790-8312-1df8bd324a9f.wav",
+  //   dobView: true,
+  // };
 
   const {
     transcript,
@@ -56,13 +71,18 @@ function DateOfBirth() {
   } = useSpeechRecognitionHook();
 
   const handleClick = () => {
+    // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    if (moment(inputValue).format("YYYY-MM-DD") === "Invalid date") {
+      playAudioCallBack((audio as any)[selectedLanguage]?.dateErr, handleNo);
+    } else {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    }
   };
 
   const handleCloseMic = () => {
@@ -71,20 +91,23 @@ function DateOfBirth() {
   };
 
   const handleSubmit = async () => {
+    // console.log(11);
     stopRecognition();
-    moment(inputValue).format("YYYYMMDD") !== "Invalid date" &&
-      registerFlow(moment(inputValue).format("YYYYMMDD"), nextContext);
+    if (moment(inputValue).format("YYYYMMDD") !== "Invalid date") {
+      registerFlow(completeFlowState, "4b7c27be-5f61-437e-a271-ad72c9a20d5a");
+    }
   };
 
   const handleNo = () => {
     stopRecognition();
     setTryAgain(true);
     setCheckValue(false);
+    setDOB("");
   };
 
   const handleDateChange = (selectedDate: any) => {
     const date = moment(selectedDate.$d).format("YYYYMMDD");
-    console.log(console.log(date));
+    // console.log(console.log(date));
     //
   };
 
@@ -111,14 +134,10 @@ function DateOfBirth() {
   }, [transcriptState]);
 
   useEffect(() => {
+    resetTranscript();
     playAudioURL(
       //   audioURLArray,
-      [
-        selectedLanguage === "en"
-          ? "https://storage.googleapis.com/ami-tts-storage/837aff98-8275-4d1b-a7b9-a350b8d5d007.wav"
-          : "https://storage.googleapis.com/ami-tts-storage/d31f1cf2-bde3-4311-9cde-cab7cf97746d.wav",
-        apiData.audio,
-      ],
+      [apiData.audio],
       isSpeechRecognitionSupported,
       startRecognition,
       requestPermission
@@ -168,8 +187,18 @@ function DateOfBirth() {
     if (!checkValue && askValue) {
       setTranscriptState(transcript);
       //  setInputValue(transcript);
-      const a = formatDateToYYYYMMDD(transcript);
-      a && setInputValue(a);
+      const data = formatDateToYYYYMMDD(transcript)
+        ? formatDateToYYYYMMDD(transcript)
+        : transcript;
+      // console.log(
+      //   formatDateToYYYYMMDD(transcript)
+      //     ? formatDateToYYYYMMDD(transcript)
+      //     : transcript
+      // );
+      data && setInputValue(filterValue(data));
+      transcript.length > 0 && setDOB(data);
+
+      // console.log(transcript);
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -183,6 +212,10 @@ function DateOfBirth() {
       handleCloseMic();
     }
   }, [transcript]);
+
+  useEffect(() => {
+    setCompleteFlowState(flowComplete);
+  }, [dobData]);
 
   return (
     <div>
@@ -204,7 +237,7 @@ function DateOfBirth() {
                   fontWeight: "400",
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.dob}
+                {(Translations as any)[selectedLanguage]?.dob}
               </p>
             </div>
           </div>
@@ -237,7 +270,11 @@ function DateOfBirth() {
               <Mic
                 handleCloseMic={handleCloseMic}
                 inputValue={inputValue}
-                transcript={transcript.replace(/\s/g, "")}
+                transcript={
+                  formatDateToYYYYMMDD(transcript)
+                    ? formatDateToYYYYMMDD(transcript)
+                    : transcript
+                }
                 dots={dots}
               />
             )}
@@ -263,11 +300,13 @@ function DateOfBirth() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(Translations as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
                 {" "}
-                {(FlowHeaders as any)[selectedLanguage]?.dob}
+                {(Translations as any)[selectedLanguage]?.dob}
               </p>
             </div>
           </div>
@@ -285,7 +324,7 @@ function DateOfBirth() {
                   width: "413px",
                 }}
               >
-                <span> {(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                <span> {(Translations as any)[selectedLanguage]?.correct}</span>
                 <span
                   style={{
                     fontSize: "18px",
@@ -294,12 +333,15 @@ function DateOfBirth() {
                     color: "#91278F",
                   }}
                 >
-                  {transcriptState}
+                  {/* {transcriptState} */}
+                  {formatDateToYYYYMMDD(transcriptState)
+                    ? formatDateToYYYYMMDD(transcriptState)
+                    : transcriptState}
                 </span>
 
-                {moment(inputValue).format("YYYYMMDD") === "Invalid date" && (
-                  <p style={{ color: "#F15A59", fontSize: "12px" }}>
-                    {(FlowHeaders as any)[selectedLanguage]?.errDate}
+                {moment(inputValue).format("YYYY-MM-DD") === "Invalid date" && (
+                  <p style={{ color: "#F15A59", fontSize: "15px" }}>
+                    {(Translations as any)[selectedLanguage]?.errDate}
                   </p>
                 )}
                 <div
@@ -320,7 +362,7 @@ function DateOfBirth() {
                       variant="contained"
                       startIcon={<CheckCircleSharp />}
                       style={{
-                        fontFamily: 'IBM Plex Sans Devanagari',
+                        fontFamily: "IBM Plex Sans Devanagari ",
                         width: "100%",
                         borderRadius: "8px",
                         marginBottom: "10px",
@@ -328,7 +370,7 @@ function DateOfBirth() {
                       }}
                       onClick={handleSubmit}
                     >
-                      {(FlowHeaders as any)[selectedLanguage]?.yes}
+                      {(Translations as any)[selectedLanguage]?.yes}
                     </Button>
                   </div>
 
@@ -336,7 +378,7 @@ function DateOfBirth() {
                     variant="outlined"
                     startIcon={<Cancel />}
                     style={{
-                      fontFamily: 'IBM Plex Sans Devanagari',
+                      fontFamily: "IBM Plex Sans Devanagari ",
                       width: "100%",
                       borderRadius: "8px",
                       marginBottom: "10px",
@@ -345,7 +387,7 @@ function DateOfBirth() {
                     }}
                     onClick={handleNo}
                   >
-                    {(FlowHeaders as any)[selectedLanguage]?.no}
+                    {(Translations as any)[selectedLanguage]?.no}
                   </Button>
 
                   {listening && <ListeningMic />}
@@ -367,14 +409,17 @@ function DateOfBirth() {
                   flexDirection: "column",
                 }}
               >
-                <span>{(FlowHeaders as any)[selectedLanguage]?.tryAgain} </span>
+                <span>
+                  {(Translations as any)[selectedLanguage]?.tryAgain}{" "}
+                </span>
               </div>
               <div style={{ padding: "14px" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateCalendar
                     maxDate={dayjs()}
                     onChange={(selectedDate: any) => {
-                      setDate(moment(selectedDate.$d).format("YYYYMMDD"));
+                      // console.log(moment(selectedDate.$d).format("YYYY-MM-DD"));
+                      setDOB(moment(selectedDate.$d).format("YYYY-MM-DD"));
                     }}
                   />
                 </LocalizationProvider>
@@ -384,7 +429,7 @@ function DateOfBirth() {
                 variant="contained"
                 startIcon={<CheckCircleSharp />}
                 style={{
-                  fontFamily: 'IBM Plex Sans Devanagari',
+                  fontFamily: "IBM Plex Sans Devanagari ",
                   borderRadius: "8px",
                   backgroundColor: "#91278F",
                   width: "fitContent",
@@ -392,9 +437,18 @@ function DateOfBirth() {
                   margin: "auto",
                   marginBottom: "10px",
                 }}
-                onClick={() => registerFlow(date, nextContext)}
+                onClick={() => {
+                  setDOB(inputValue);
+
+                  setTimeout(() => {
+                    registerFlow(
+                      completeFlowState,
+                      "4b7c27be-5f61-437e-a271-ad72c9a20d5a"
+                    );
+                  }, 1000);
+                }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.submit}
+                {(Translations as any)[selectedLanguage]?.submit}
               </Button>
             </>
           )}

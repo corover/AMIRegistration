@@ -7,15 +7,30 @@ import {
   VoiceRecognitionContainer,
   VoiceRecognitionSpan,
 } from "../UI/Style";
-import { playAudioURL } from "../utils/data";
+import { playAudio, playAudioURL } from "../utils/data";
 import useSpeechRecognitionHook from "../Hooks/useSpeechRecognitionHook";
 import { Listening } from "../translation";
 import { reducer } from "../store/Redux-selector/Selector";
 
 function Mic(props: any) {
-  const {  handleCloseMic, inputValue, transcript, dots } = props;
+  const { resetTranscript } = useSpeechRecognitionHook();
+  const { handleCloseMic, inputValue, transcript, dots } = props;
 
   const { selectedLanguage } = useSelector(reducer);
+
+  React.useEffect(() => {
+    // resetTranscript();
+    playAudio(
+      "https://coroverbackendstorage.blob.core.windows.net/chatbot-audio-bucket/start.mp3"
+    );
+
+    return () => {
+      resetTranscript();
+      playAudio(
+        "https://coroverbackendstorage.blob.core.windows.net/chatbot-audio-bucket/caught.mp3"
+      );
+    };
+  }, []);
 
   return (
     <ContainerVoice className={"ContainerVoice"} style={{ bottom: "0px" }}>
@@ -36,7 +51,13 @@ function Mic(props: any) {
             padding: "0px 15px 0px 15px",
           }}
         >
-          <p style={{ textAlign: "center", fontSize: "20px" }}>
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "20px",
+              wordBreak: "break-word",
+            }}
+          >
             {inputValue == ""
               ? (Listening as any)[selectedLanguage] + ".".repeat(dots)
               : transcript}
@@ -71,11 +92,7 @@ function Mic(props: any) {
           <VoiceRecognitionSpan
             className={"VoiceRecognitionSpan"}
           ></VoiceRecognitionSpan>
-          <img
-            src="Mic.svg"
-            alt="mic"
-            style={{ zIndex: 999 }}
-          />
+          <img src="Mic.svg" alt="mic" style={{ zIndex: 999 }} />
 
           <VoiceRecognitionSpan
             className={"VoiceRecognitionSpan"}

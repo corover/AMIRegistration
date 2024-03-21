@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 
-import { FlowHeaders } from "../../translation";
+import { Translations } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer, apiSelector } from "../../store/Redux-selector/Selector";
+import { setBackgroundColor } from "../../store/Redux-Dispatcher/Dispatcher";
 
 function FlowComplete() {
   const { selectedLanguage } = useSelector(reducer);
@@ -14,6 +15,7 @@ function FlowComplete() {
     audio.play().catch((error) => {
       console.error("Error playing audio:", error);
     });
+    setBackgroundColor("white")
   }, []);
 
   return (
@@ -39,7 +41,7 @@ function FlowComplete() {
         </div>
       </div>
       <span style={{ padding: "10px" }}>
-        {(FlowHeaders as any)[selectedLanguage]?.complete}
+        {(Translations as any)[selectedLanguage]?.complete}
       </span>
     </div>
   );

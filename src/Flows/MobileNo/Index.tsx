@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from "react";
-import {
-  CloseIcon,
-  ContainerVoice,
-  VoiceRecognitionContainer,
-  VoiceRecognitionSpan,
-} from "../../UI/Style";
+import { useState, useEffect } from "react";
+import { ContainerVoice, VoiceRecognitionContainer } from "../../UI/Style";
 import { CheckCircleSharp, Cancel } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { FlowHeaders, Listening } from "../../translation";
+import { Translations, audio } from "../../translation";
 import { useSelector } from "react-redux";
 import { reducer } from "../../store/Redux-selector/Selector";
 import useSpeechRecognitionHook from "../../Hooks/useSpeechRecognitionHook";
-import { setName_view } from "../../store/Redux-Dispatcher/FlowDispatcher";
 import { registerFlow } from "../../Apis";
 import { apiSelector } from "../../store/Redux-selector/Selector";
-import { userProfileState } from "../../store/Redux-selector/Selector";
-import { setPinCode } from "../../store/Redux-Dispatcher/UserDispatcher";
-import { isResponse, playAudioURL } from "../../utils/data";
-import { audio } from "../../translation";
+import {
+  filterValue,
+  isResponse,
+  playAudioCallBack,
+  playAudioURL,
+} from "../../utils/data";
 import { setCheckMic } from "../../store/Redux-Dispatcher/Dispatcher";
 import ListeningMic from "../../UI/Listening";
 import Mic from "../../UI/Mic";
 
 function MobileNumber() {
-  const { selectedLanguage } = useSelector(reducer);
-  const { mobileNoData } = useSelector(userProfileState);
-  const { nextContext, apiData } = useSelector(apiSelector);
+  const {
+    transcript,
+    startRecognition,
+    stopRecognition,
+    isSpeechRecognitionSupported,
+    requestPermission,
+    listening,
+    resetTranscript,
+  } = useSpeechRecognitionHook();
 
   const [askValue, setAskValue] = useState(true);
   const [checkValue, setCheckValue] = useState(false);
@@ -37,30 +39,26 @@ function MobileNumber() {
   const [errorMessage, setErrorState] = useState("");
   const [error, setError] = useState(true);
 
-  const {
-    transcript,
-    startRecognition,
-    stopRecognition,
-    isSpeechRecognitionSupported,
-    requestPermission,
-    listening,
-    resetTranscript,
-  } = useSpeechRecognitionHook();
+  const { selectedLanguage } = useSelector(reducer);
+  const { nextContext, apiData } = useSelector(apiSelector);
 
   const handleInputChange = (event: any) => {
-    setTranscriptState(event.target.value);
-    setInputValue(event.target.value);
+    setTranscriptState(filterValue(event.target.value));
+    setInputValue(filterValue(event.target.value));
   };
 
   const handleClick = () => {
-    // isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
     setCheckMic(true);
-    playAudioURL(
-      [(audio as any)[selectedLanguage]?.itsCorrect],
-      isSpeechRecognitionSupported,
-      startRecognition,
-      requestPermission
-    );
+    if (error) {
+      playAudioURL(
+        [(audio as any)[selectedLanguage]?.itsCorrect],
+        isSpeechRecognitionSupported,
+        startRecognition,
+        requestPermission
+      );
+    } else {
+      playAudioCallBack((audio as any)[selectedLanguage]?.mobileErr, handleNo);
+    }
   };
 
   const handleCloseMic = () => {
@@ -79,31 +77,31 @@ function MobileNumber() {
     stopRecognition();
   };
 
+  // useEffect(() => {
+  //   const value = setTimeout(() => {
+  //     if (askValue && transcript.length > 0) {
+  //       setAskValue(false);
+  //       setCheckValue(true);
+  //       handleCloseMic();
+  //     }
+  //   }, 1500);
+
+  //   const value_ = setTimeout(() => {
+  //     if (tryAgain && transcript.length > 0) {
+  //       setTryAgain(false);
+  //       setCheckValue(false);
+  //       handleCloseMic();
+  //     }
+  //   }, 1800);
+
+  //   return () => {
+  //     clearTimeout(value);
+  //     clearTimeout(value_);
+  //   };
+  // }, [transcriptState]);
+
   useEffect(() => {
-    const value = setTimeout(() => {
-      if (askValue && transcript.length > 0) {
-        setAskValue(false);
-        setCheckValue(true);
-        handleCloseMic();
-      }
-    }, 1800);
-
-    const value_ = setTimeout(() => {
-      if (tryAgain && transcript.length > 0) {
-        setTryAgain(false);
-        setCheckValue(false);
-        handleCloseMic();
-      }
-    }, 2200);
-
-    return () => {
-      clearTimeout(value);
-      clearTimeout(value_);
-      // setTranscriptState("")
-    };
-  }, [transcriptState]);
-
-  useEffect(() => {
+    resetTranscript();
     playAudioURL(
       [apiData.audio],
       isSpeechRecognitionSupported,
@@ -126,17 +124,9 @@ function MobileNumber() {
 
   useEffect(() => {
     let timmer: any;
-    //   // if (askValue) {
-    //   //   timmer = setTimeout(() => {
-    //   //     // handleClick();
-    //   //     // setRenderMic(true);
-    //   //   }, 500);
-    //   // }
-
     if (checkValue) {
       timmer = setTimeout(() => {
         handleClick();
-        //  setRenderMic((prevState) => !prevState);
       }, 500);
     }
     return () => {
@@ -144,20 +134,20 @@ function MobileNumber() {
     };
   }, [askValue, tryAgain]);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setRenderMic(listening);
-    }, 1500);
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     setRenderMic(listening);
+  //   }, 1500);
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [listening, transcript]);
+  //   return () => {
+  //     clearTimeout(timeoutId);
+  //   };
+  // }, [listening, transcript]);
 
   useEffect(() => {
     if (!checkValue && askValue) {
-      setTranscriptState(transcript.replace(/\s/g, ""));
-      setInputValue(transcript.replace(/\s/g, ""));
+      setTranscriptState(filterValue(transcript.replace(/\s/g, "")));
+      setInputValue(filterValue(transcript.replace(/\s/g, "")));
     }
 
     let response = isResponse(transcript, selectedLanguage);
@@ -170,25 +160,44 @@ function MobileNumber() {
     if (response === "negative") {
       handleCloseMic();
       handleNo();
-     
     }
-    // console.log("transcript", transcript)
 
-  }, [transcript]);
+    const timeoutId = setTimeout(() => {
+      setRenderMic(listening);
+    }, 1500);
+
+    const value = setTimeout(() => {
+      if (askValue && transcript.length > 0) {
+        setAskValue(false);
+        setCheckValue(true);
+        handleCloseMic();
+      }
+    }, 1500);
+
+    const value_ = setTimeout(() => {
+      if (tryAgain && transcript.length > 0) {
+        setTryAgain(false);
+        setCheckValue(false);
+        handleCloseMic();
+      }
+    }, 1800);
+    
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearTimeout(value);
+      clearTimeout(value_);
+    };
+  }, [transcript, listening]);
 
   useEffect(() => {
     if (inputValue.length === 10 && /^[0-9]+$/.test(inputValue)) {
       setError(true);
     } else {
       setError(false);
-      setErrorState(
-        selectedLanguage === "en"
-          ? `Enter 10 digit number`
-          : `10 अंकीय संख्या दर्ज करें`
-      );
+      setErrorState((Translations as any)[selectedLanguage]?.mobileMssg);
     }
   }, [inputValue, error]);
-
 
   return (
     <div>
@@ -210,7 +219,7 @@ function MobileNumber() {
                   fontWeight: "400",
                 }}
               >
-                {(FlowHeaders as any)[selectedLanguage]?.mobile}
+                {(Translations as any)[selectedLanguage]?.mobile}
               </p>
             </div>
           </div>
@@ -268,10 +277,12 @@ function MobileNumber() {
                 borderTopLeftRadius: "14px",
               }}
             >
-              <h3 style={{fontSize:"24px"}}>{(FlowHeaders as any)[selectedLanguage]?.reg}</h3>
+              <h3 style={{ fontSize: "24px" }}>
+                {(Translations as any)[selectedLanguage]?.reg}
+              </h3>
 
               <p style={{ fontSize: "20px" }}>
-                {(FlowHeaders as any)[selectedLanguage]?.mobile}
+                {(Translations as any)[selectedLanguage]?.mobile}
               </p>
             </div>
           </div>
@@ -289,11 +300,13 @@ function MobileNumber() {
                 }}
               >
                 {!error ? (
-                  <p style={{ color: "red", fontSize: "12px" }}>
+                  <p style={{ color: "red", fontSize: "15px" }}>
                     {errorMessage}
                   </p>
                 ) : (
-                  <span>{(FlowHeaders as any)[selectedLanguage]?.correct}</span>
+                  <span>
+                    {(Translations as any)[selectedLanguage]?.correct}
+                  </span>
                 )}
 
                 <span
@@ -321,7 +334,7 @@ function MobileNumber() {
                   disabled={!error}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -329,14 +342,14 @@ function MobileNumber() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.yes}
+                  {(Translations as any)[selectedLanguage]?.yes}
                 </Button>
 
                 <Button
                   variant="outlined"
                   startIcon={<Cancel />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "100%",
                     borderRadius: "8px",
                     marginBottom: "10px",
@@ -345,14 +358,13 @@ function MobileNumber() {
                   }}
                   onClick={handleNo}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.no}
+                  {(Translations as any)[selectedLanguage]?.no}
                 </Button>
 
                 {listening && <ListeningMic />}
               </div>
             </>
           ) : (
-            // submit no4
             <>
               <div
                 style={{
@@ -379,7 +391,7 @@ function MobileNumber() {
                     outline: "none",
                     letterSpacing: "14px",
                     textAlign: "center",
-                    border: "1px solid gray",
+                    border: "1px solid white",
                   }}
                 />
 
@@ -388,7 +400,7 @@ function MobileNumber() {
                   disabled={!error}
                   startIcon={<CheckCircleSharp />}
                   style={{
-                    fontFamily: 'IBM Plex Sans Devanagari',
+                    fontFamily: "IBM Plex Sans Devanagari ",
                     width: "104%",
                     borderRadius: "8px",
                     marginBottom: "100px",
@@ -397,9 +409,8 @@ function MobileNumber() {
                   }}
                   onClick={handleSubmit}
                 >
-                  {(FlowHeaders as any)[selectedLanguage]?.submit}
+                  {(Translations as any)[selectedLanguage]?.submit}
                 </Button>
-                {/* <button onClick={()=>{isSpeechRecognitionSupported() ? startRecognition() : requestPermission();}}> Mic</button> */}
               </div>
             </>
           )}

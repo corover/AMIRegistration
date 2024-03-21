@@ -3,16 +3,16 @@ import moment from "moment";
 export const languageList = [
   { name: "English", id: "en" },
   { name: "हिंदी", id: "hi" },
-  { name: "தமிழ்", id: "ta" },
-  { name: "తెలుగు", id: "te" },
-  { name: "ಕನ್ನಡ", id: "kn" },
-  { name: "മലയാളം", id: "ml" },
-  { name: "বাঙালি", id: "bn" },
-  { name: "اردو", id: "ur" },
   { name: "मराठी", id: "mr" },
   { name: "ગુજરાતી", id: "gu" },
+  { name: "മലയാളം", id: "ml" },
   { name: "ਪੰਜਾਬੀ", id: "pa" },
+  { name: "తెలుగు", id: "te" },
   { name: "ଓଡିଆ", id: "or" },
+  { name: "ಕನ್ನಡ", id: "kn" },
+  { name: "বাঙালি", id: "bn" },
+  { name: "தமிழ்", id: "ta" },
+  { name: "اردو", id: "ur" },
   { name: "অসমীয়া", id: "as" },
 ];
 
@@ -49,6 +49,9 @@ export function isResponse(transcript: any, language: string) {
     "yeah",
     "right",
     "sahi",
+    "han",
+    "haah",
+    "hah",
   ];
   negativeResponses = [
     "no",
@@ -95,7 +98,6 @@ function isValidDay(year: number, month: number, day: number): boolean {
 export function formatDateToYYYYMMDD(dateString: string): string | undefined {
   // Remove ordinals from the input date string
   dateString = dateString.replace(/(\d+)(st|nd|rd|th)/g, "$1");
-
   let parsedDate;
   if (moment(dateString).isValid()) {
     parsedDate = new Date(dateString);
@@ -122,10 +124,53 @@ export function formatDateToYYYYMMDD(dateString: string): string | undefined {
   const formattedMonth = month.toString().padStart(2, "0");
   const formattedDay = day.toString().padStart(2, "0");
   const yyyymmdd = `${year}${formattedMonth}${formattedDay}`;
-
-  return yyyymmdd;
+  return moment(yyyymmdd).format("YYYY-MM-DD");
 }
 
+// export const playAudioURL = (
+//   audioURLs: string[],
+//   isSpeechRecognitionSupported: any,
+//   startRecognition: any,
+//   requestPermission: any
+// ) => {
+//   let currentAudioIndex = 0;
+//   const audios: HTMLAudioElement[] = audioURLs
+//     .filter((item) => item !== undefined && item !== null && item.length > 0)
+//     .map((url) => new Audio(url));
+
+//   const handleAudioEnded = () => {
+//     currentAudioIndex++;
+//     if (currentAudioIndex < audios.length) {
+//       playNextAudio();
+//     } else {
+//       // Perform actions when all audios finish playing
+//       isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
+//     }
+//   };
+
+//   const playNextAudio = () => {
+//     if (currentAudioIndex < audios.length) {
+//       const audio = audios[currentAudioIndex];
+//       audio.play().catch((error) => {
+//         console.error("Error playing audio:", error);
+//       });
+
+//       audio.addEventListener("ended", handleAudioEnded);
+//     }
+//   };
+
+//   playNextAudio();
+
+//   return () => {
+//     audios.forEach((audio) => {
+//       if (!audio.paused) {
+//         audio.pause();
+//       }
+//       audio.currentTime = 0;
+//       audio.removeEventListener("ended", handleAudioEnded);
+//     });
+//   };
+// };
 export const playAudioURL = (
   audioURLs: string[],
   isSpeechRecognitionSupported: any,
@@ -158,16 +203,23 @@ export const playAudioURL = (
     }
   };
 
+  const pauseOrStopAudio = (stop: boolean) => {
+    audios.forEach((audio, index) => {
+      if (index === currentAudioIndex) {
+        if (stop) {
+          audio.pause();
+          audio.currentTime = 0;
+        } else {
+          audio.pause();
+        }
+      }
+    });
+  };
+
   playNextAudio();
 
-  return () => {
-    audios.forEach((audio) => {
-      if (!audio.paused) {
-        audio.pause();
-      }
-      audio.currentTime = 0;
-      audio.removeEventListener("ended", handleAudioEnded);
-    });
+  return {
+    pauseOrStopAudio,
   };
 };
 
@@ -201,10 +253,88 @@ const voices = {
 export const getFrequentVoice = (language: "en" | "hi"): string => {
   const voicesForLanguage = voices[language] as any;
   const voiceKeys = Object.keys(voicesForLanguage);
-  // console.log(voiceKeys)
   const randomKey = voiceKeys[Math.floor(Math.random() * voiceKeys.length)];
-  // console.log(randomKey)
   return voicesForLanguage[randomKey];
+};
 
-  
+export const filterValue = (value: string | number) => {
+  return typeof value === "string"
+    ? value.replace(/[^a-zA-Z0-9\s]|\.+$/g, "")
+    : String(value).replace(/[^a-zA-Z0-9\s]|\.+$/g, "");
+};
+
+export const getGender = (word: string): string => {
+  const genderMapping: { [key: string]: string } = {
+    boy: "Male",
+    girl: "Female",
+    men: "Male",
+    man: "Male",
+    mail: "Male",
+    women: "Female",
+    woman: "Female",
+    guy: "Male",
+    guys: "Male",
+    ma: "Male",
+    "male ma": "Male",
+    "male male": "Male",
+    "male male male": "Male",
+    lady: "Female",
+    "dont wish to specify": "Don't Wish to Specify",
+    "dont wish to": "Don't Wish to Specify",
+  };
+
+  const lowerCaseWord = word.toLowerCase();
+  return genderMapping[lowerCaseWord] || "";
+};
+
+export const getIntrest = (word: string): string => {
+  const data: { [key: string]: string } = {
+    रोजगार: "रोज़गार",
+    के: "खेल",
+    शिक्षक: "शिक्षा",
+    शिक्षा: "शिक्षा",
+    केन: "खेल",
+    समाचार:"समाचार",
+    सरकारी :"सरकारी ",
+    योजना:"योजना"
+    
+  };
+  const lowerCaseWord = word.toLowerCase();
+  return data[lowerCaseWord] || "";
+};
+
+export const playAudio = (audioUrl: string) => {
+  if (!audioUrl) return;
+
+  const audioElement = new Audio();
+
+  if (audioElement) {
+    audioElement.src = audioUrl;
+    audioElement.load();
+
+    audioElement.addEventListener("canplaythrough", () => {
+      audioElement.play();
+    });
+
+    audioElement.addEventListener("ended", () => {});
+  }
+};
+
+export const playAudioCallBack = (audioUrl: string, handleNo: () => void) => {
+  if (!audioUrl) return;
+
+  const audioElement = new Audio();
+
+  if (audioElement) {
+    audioElement.src = audioUrl;
+    audioElement.load();
+
+    audioElement.addEventListener("canplaythrough", () => {
+      audioElement.play();
+    });
+
+    audioElement.addEventListener("ended", () => {
+      handleNo();
+    });
+  }
 };
