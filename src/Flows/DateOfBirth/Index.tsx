@@ -201,7 +201,7 @@ function DateOfBirth() {
       // console.log(transcript);
     }
 
-    let response = isResponse(transcript, selectedLanguage);
+    let response = checkValue && isResponse(transcript, selectedLanguage);
 
     if (response === "positive") {
       handleCloseMic();

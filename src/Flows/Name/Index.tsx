@@ -188,7 +188,7 @@ function Name() {
       setInputValue((transcript));
     }
 
-    let response = isResponse(transcript, selectedLanguage);
+    let response = checkValue && isResponse(transcript, selectedLanguage);
 
     if (response === "positive") {
       handleCloseMic();

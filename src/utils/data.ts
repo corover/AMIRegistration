@@ -52,6 +52,8 @@ export function isResponse(transcript: any, language: string) {
     "han",
     "haah",
     "hah",
+    "हां",
+    "सही",
   ];
   negativeResponses = [
     "no",
@@ -61,6 +63,7 @@ export function isResponse(transcript: any, language: string) {
     "not yet",
     "galat",
     "nahi",
+    "नहीं",
   ];
 
   if (

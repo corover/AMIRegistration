@@ -150,7 +150,7 @@ function MobileNumber() {
       setInputValue(filterValue(transcript.replace(/\s/g, "")));
     }
 
-    let response = isResponse(transcript, selectedLanguage);
+    let response = checkValue && isResponse(transcript, selectedLanguage);
 
     if (error && response === "positive") {
       handleCloseMic();

@@ -202,7 +202,7 @@ function City() {
       setInputValue(filterValue(transcript));
     }
 
-    let response = isResponse(transcript, selectedLanguage);
+    let response = checkValue && isResponse(transcript, selectedLanguage);
     switch (response) {
       case "positive":
         handleCloseMic();

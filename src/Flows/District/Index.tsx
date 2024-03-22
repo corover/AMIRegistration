@@ -217,8 +217,8 @@ function District() {
       setInputValue(transcript);
       // }
     }
-    console.log(transcript);
-    let response = isResponse(transcript, selectedLanguage);
+    
+    let response = checkValue && isResponse(transcript, selectedLanguage);
     switch (response) {
       case "positive":
         handleCloseMic();
