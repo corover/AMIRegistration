@@ -122,7 +122,7 @@ function LanguageSelection() {
                       ? startRecognition()
                       : requestPermission()
                   }
-                  src="registration/Mic.svg"
+                  src="Mic.svg"
                   alt="mic"
                   style={{
                     zIndex: 999,

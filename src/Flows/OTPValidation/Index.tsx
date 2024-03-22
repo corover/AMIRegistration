@@ -280,7 +280,7 @@ function OTPValidation() {
           >
             <VoiceRecognitionContainer className={"VoiceRecognitionContainer"}>
               <img
-                src="registration/Mic.svg"
+                src="Mic.svg"
                 alt="mic"
                 style={{ zIndex: 999 }}
                 onClick={() =>
