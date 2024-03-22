@@ -185,9 +185,9 @@ function OTPValidation() {
       handleCloseMic();
       handleNo();
     }
-    const timeoutId = setTimeout(() => {
+     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+    }, 200);
 
     const value = setTimeout(() => {
       if (askValue && transcript.length > 0) {
@@ -280,7 +280,7 @@ function OTPValidation() {
           >
             <VoiceRecognitionContainer className={"VoiceRecognitionContainer"}>
               <img
-                src="Mic.svg"
+                src="registration/Mic.svg"
                 alt="mic"
                 style={{ zIndex: 999 }}
                 onClick={() =>

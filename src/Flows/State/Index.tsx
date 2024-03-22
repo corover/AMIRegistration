@@ -403,9 +403,9 @@ function State() {
   }, [checkValue]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+    }, 200);
 
     return () => {
       clearTimeout(timeoutId);

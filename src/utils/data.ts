@@ -191,7 +191,9 @@ export const playAudioURL = (
       playNextAudio();
     } else {
       // Perform actions when all audios finish playing
-      isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
+      setTimeout(()=>{
+        isSpeechRecognitionSupported() ? startRecognition() : requestPermission();
+      },200)
     }
   };
 

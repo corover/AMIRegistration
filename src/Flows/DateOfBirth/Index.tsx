@@ -255,7 +255,7 @@ function DateOfBirth() {
           >
             <VoiceRecognitionContainer className={"VoiceRecognitionContainer"}>
               <img
-                src="Mic.svg"
+                src="registration/Mic.svg"
                 alt="mic"
                 style={{ zIndex: 999 }}
                 onClick={() =>
@@ -335,7 +335,9 @@ function DateOfBirth() {
                 >
                   {/* {transcriptState} */}
                   {formatDateToYYYYMMDD(transcriptState)
-                    ? formatDateToYYYYMMDD(transcriptState)
+                    ? moment(formatDateToYYYYMMDD(transcriptState)).format(
+                        "DD-MM-YYYY"
+                      )
                     : transcriptState}
                 </span>
 

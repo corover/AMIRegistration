@@ -173,9 +173,9 @@ function PinCode() {
   }, [askValue, tryAgain]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+    }, 200);
 
     return () => {
       clearTimeout(timeoutId);
@@ -258,7 +258,7 @@ function PinCode() {
                 className={"VoiceRecognitionContainer"}
               >
                 <img
-                  src="Mic.svg"
+                  src="registration/Mic.svg"
                   alt="mic"
                   style={{ zIndex: 999 }}
                   onClick={() =>

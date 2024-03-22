@@ -245,7 +245,7 @@ function AreaOfIntrest() {
                   ? startRecognition()
                   : requestPermission()
               }
-              src="Mic.svg"
+              src="registration/Mic.svg"
               alt="mic"
               style={{
                 zIndex: 999,

@@ -164,7 +164,7 @@ function MobileNumber() {
 
     const timeoutId = setTimeout(() => {
       setRenderMic(listening);
-    }, 1500);
+    }, 200);
 
     const value = setTimeout(() => {
       if (askValue && transcript.length > 0) {
@@ -237,7 +237,7 @@ function MobileNumber() {
           >
             <VoiceRecognitionContainer className={"VoiceRecognitionContainer"}>
               <img
-                src="Mic.svg"
+                src="registration/Mic.svg"
                 alt="mic"
                 style={{ zIndex: 999 }}
                 onClick={() => {

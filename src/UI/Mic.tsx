@@ -92,7 +92,7 @@ function Mic(props: any) {
           <VoiceRecognitionSpan
             className={"VoiceRecognitionSpan"}
           ></VoiceRecognitionSpan>
-          <img src="Mic.svg" alt="mic" style={{ zIndex: 999 }} />
+          <img src="registration/Mic.svg" alt="mic" style={{ zIndex: 999 }} />
 
           <VoiceRecognitionSpan
             className={"VoiceRecognitionSpan"}
